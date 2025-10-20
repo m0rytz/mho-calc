@@ -155,7 +155,7 @@ export default function App() {
 
 
     return (
-        <div className="relative min-h-screen py-12 px-10">
+        <div className="relative min-h-screen py-4 px-2 sm:py-8 sm:px-4 lg:py-12 lg:px-10">
             {/* Main Content */}
             <main>
                 {/* Toast */}
@@ -164,100 +164,194 @@ export default function App() {
                         {toast.message}
                     </div>
                 )}
-                {/* Hero */}
-                <HeroSection
-                    selectedHero={selectedHero} setSelectedHero={setSelectedHero}
-                    heroLevel={heroLevel} setHeroLevel={setHeroLevel}
-                    setCombatState={setCombatState}
-                    setHeroAttributes={setHeroAttributes}
-                    finalStats={finalStats}
-                    setInfoModalOpen={setInfoModalOpen}
-                />
+                
+                {/* Desktop Layout */}
+                <div className="hidden xl:block">
+                    {/* Hero */}
+                    <HeroSection
+                        selectedHero={selectedHero} setSelectedHero={setSelectedHero}
+                        heroLevel={heroLevel} setHeroLevel={setHeroLevel}
+                        setCombatState={setCombatState}
+                        setHeroAttributes={setHeroAttributes}
+                        finalStats={finalStats}
+                        setInfoModalOpen={setInfoModalOpen}
+                    />
 
-                {/* Stats */}
-                <StatsSection selectedHero={selectedHero} 
-                finalStats={finalStats} onSave={saveState} onLoad={loadState} />
+                    {/* Stats */}
+                    <StatsSection selectedHero={selectedHero} 
+                    finalStats={finalStats} onSave={saveState} onLoad={loadState} />
 
-                {/* Tabs */}
-                <div className="grid grid-cols-[290px_minmax(500px,_1fr)_345px] justify-center gap-4 p-4">
-                    <section className="flex-1 col-start-2 row-start-1">
-                        {/* Tab Headers */}
-                        <div className="flex gap-4 border-b border-gray-700 mb-4">
-                            <button
-                                onClick={() => setActiveTab("items")}
-                                className={`pb-2 px-4 cursor-pointer ${activeTab === "items" ? "text-blue-500 border-b-2 border-blue-500 font-semibold" : "text-gray-400"
-                                    }`}
-                            >
-                                Items
-                            </button>
-                            <button
-                                onClick={() => setActiveTab("infinity")}
-                                className={`pb-2 px-4 cursor-pointer ${activeTab === "infinity" ? "text-blue-500 border-b-2 border-blue-500 font-semibold" : "text-gray-400"
-                                    }`}
-                            >
-                                Infinity
-                            </button>
-                            <button
-                                onClick={() => setActiveTab("synergy")}
-                                className={`pb-2 px-4 cursor-pointer ${activeTab === "synergy" ? "text-blue-500 border-b-2 border-blue-500 font-semibold" : "text-gray-400"
-                                    }`}
-                            >
-                                Synergy
-                            </button>
-                            <button
-                                onClick={() => setActiveTab("damage")}
-                                className={`pb-2 px-4 cursor-pointer ${activeTab === "damage" ? "text-blue-500 border-b-2 border-blue-500 font-semibold" : "text-gray-400"
-                                    }`}
-                            >
-                                Damage
-                            </button>
-                            <div className="ml-auto" />
-                        </div>
+                    {/* Tabs */}
+                    <div className="grid grid-cols-[290px_minmax(500px,_1fr)_345px] justify-center gap-4 p-4">
+                        <section className="flex-1 col-start-2 row-start-1">
+                            {/* Tab Headers */}
+                            <div className="flex gap-4 border-b border-gray-700 mb-4">
+                                <button
+                                    onClick={() => setActiveTab("items")}
+                                    className={`pb-2 px-4 cursor-pointer ${activeTab === "items" ? "text-blue-500 border-b-2 border-blue-500 font-semibold" : "text-gray-400"
+                                        }`}
+                                >
+                                    Items
+                                </button>
+                                <button
+                                    onClick={() => setActiveTab("infinity")}
+                                    className={`pb-2 px-4 cursor-pointer ${activeTab === "infinity" ? "text-blue-500 border-b-2 border-blue-500 font-semibold" : "text-gray-400"
+                                        }`}
+                                >
+                                    Infinity
+                                </button>
+                                <button
+                                    onClick={() => setActiveTab("synergy")}
+                                    className={`pb-2 px-4 cursor-pointer ${activeTab === "synergy" ? "text-blue-500 border-b-2 border-blue-500 font-semibold" : "text-gray-400"
+                                        }`}
+                                >
+                                    Synergy
+                                </button>
+                                <button
+                                    onClick={() => setActiveTab("damage")}
+                                    className={`pb-2 px-4 cursor-pointer ${activeTab === "damage" ? "text-blue-500 border-b-2 border-blue-500 font-semibold" : "text-gray-400"
+                                        }`}
+                                >
+                                    Damage
+                                </button>
+                                <div className="ml-auto" />
+                            </div>
 
-                        {/* Tab Content */}
-                        <div>
-                            {activeTab === "items" && (
-                                <ItemsSection items={items} setItems={setItems} />
-                            )}
-                            {activeTab === "infinity" && (
-                                <InfinitySection
-                                    infinity={infinity}
-                                    setInfinity={setInfinity}
-                                    infinityAttributes={infinityAttributes}
-                                    setInfinityAttributes={setInfinityAttributes}
-                                    pointsRemaining={pointsRemaining}
-                                    setPointsRemaining={setPointsRemaining}
-                                    ranks={ranks}
-                                    setRanks={setRanks}
-                                    usedPerGem={usedPerGem}
-                                    setUsedPerGem={setUsedPerGem}
-                                />
-                            )}
-                            {activeTab === "synergy" && (
-                                <SynergySection
-                                    heroLevel={heroLevel}
-                                    synergy={synergy} setSynergy={setSynergy}
-                                    activatedHeroes={activatedHeroes} setActivatedHeroes={setActivatedHeroes} />
-                            )}
-                            {activeTab === "damage" && (
-                                <DamageSection
-                                    finalStats={finalStats}
-                                    heroLevel={heroLevel}
-                                    damageCalculators={damageCalculators}
-                                    setDamageCalculators={setDamageCalculators}
-                                    globalCheckedConditions={globalCheckedConditions}
-                                    setGlobalCheckedConditions={setGlobalCheckedConditions}
-                                    vuln={vuln}
-                                    setVuln={setVuln}
-                                />
-                            )}
-                        </div>
-                    </section>
+                            {/* Tab Content */}
+                            <div>
+                                {activeTab === "items" && (
+                                    <ItemsSection items={items} setItems={setItems} />
+                                )}
+                                {activeTab === "infinity" && (
+                                    <InfinitySection
+                                        infinity={infinity}
+                                        setInfinity={setInfinity}
+                                        infinityAttributes={infinityAttributes}
+                                        setInfinityAttributes={setInfinityAttributes}
+                                        pointsRemaining={pointsRemaining}
+                                        setPointsRemaining={setPointsRemaining}
+                                        ranks={ranks}
+                                        setRanks={setRanks}
+                                        usedPerGem={usedPerGem}
+                                        setUsedPerGem={setUsedPerGem}
+                                    />
+                                )}
+                                {activeTab === "synergy" && (
+                                    <SynergySection
+                                        heroLevel={heroLevel}
+                                        synergy={synergy} setSynergy={setSynergy}
+                                        activatedHeroes={activatedHeroes} setActivatedHeroes={setActivatedHeroes} />
+                                )}
+                                {activeTab === "damage" && (
+                                    <DamageSection
+                                        finalStats={finalStats}
+                                        heroLevel={heroLevel}
+                                        damageCalculators={damageCalculators}
+                                        setDamageCalculators={setDamageCalculators}
+                                        globalCheckedConditions={globalCheckedConditions}
+                                        setGlobalCheckedConditions={setGlobalCheckedConditions}
+                                        vuln={vuln}
+                                        setVuln={setVuln}
+                                    />
+                                )}
+                            </div>
+                        </section>
+                    </div>
+                </div>
+
+                {/* Mobile/Tablet Layout */}
+                <div className="xl:hidden">
+                    {/* Hero Section - Mobile */}
+                    <div className="mb-6">
+                        <HeroSection
+                            selectedHero={selectedHero} setSelectedHero={setSelectedHero}
+                            heroLevel={heroLevel} setHeroLevel={setHeroLevel}
+                            setCombatState={setCombatState}
+                            setHeroAttributes={setHeroAttributes}
+                            finalStats={finalStats}
+                            setInfoModalOpen={setInfoModalOpen}
+                        />
+                    </div>
+
+                    {/* Tab Headers - Mobile */}
+                    <div className="flex gap-2 border-b border-gray-700 mb-4 overflow-x-auto">
+                        <button
+                            onClick={() => setActiveTab("items")}
+                            className={`pb-2 px-3 cursor-pointer whitespace-nowrap text-sm ${activeTab === "items" ? "text-blue-500 border-b-2 border-blue-500 font-semibold" : "text-gray-400"
+                                }`}
+                        >
+                            Items
+                        </button>
+                        <button
+                            onClick={() => setActiveTab("infinity")}
+                            className={`pb-2 px-3 cursor-pointer whitespace-nowrap text-sm ${activeTab === "infinity" ? "text-blue-500 border-b-2 border-blue-500 font-semibold" : "text-gray-400"
+                                }`}
+                        >
+                            Infinity
+                        </button>
+                        <button
+                            onClick={() => setActiveTab("synergy")}
+                            className={`pb-2 px-3 cursor-pointer whitespace-nowrap text-sm ${activeTab === "synergy" ? "text-blue-500 border-b-2 border-blue-500 font-semibold" : "text-gray-400"
+                                }`}
+                        >
+                            Synergy
+                        </button>
+                        <button
+                            onClick={() => setActiveTab("damage")}
+                            className={`pb-2 px-3 cursor-pointer whitespace-nowrap text-sm ${activeTab === "damage" ? "text-blue-500 border-b-2 border-blue-500 font-semibold" : "text-gray-400"
+                                }`}
+                        >
+                            Damage
+                        </button>
+                    </div>
+
+                    {/* Tab Content - Mobile */}
+                    <div className="mb-6">
+                        {activeTab === "items" && (
+                            <ItemsSection items={items} setItems={setItems} />
+                        )}
+                        {activeTab === "infinity" && (
+                            <InfinitySection
+                                infinity={infinity}
+                                setInfinity={setInfinity}
+                                infinityAttributes={infinityAttributes}
+                                setInfinityAttributes={setInfinityAttributes}
+                                pointsRemaining={pointsRemaining}
+                                setPointsRemaining={setPointsRemaining}
+                                ranks={ranks}
+                                setRanks={setRanks}
+                                usedPerGem={usedPerGem}
+                                setUsedPerGem={setUsedPerGem}
+                            />
+                        )}
+                        {activeTab === "synergy" && (
+                            <SynergySection
+                                heroLevel={heroLevel}
+                                synergy={synergy} setSynergy={setSynergy}
+                                activatedHeroes={activatedHeroes} setActivatedHeroes={setActivatedHeroes} />
+                        )}
+                        {activeTab === "damage" && (
+                            <DamageSection
+                                finalStats={finalStats}
+                                heroLevel={heroLevel}
+                                damageCalculators={damageCalculators}
+                                setDamageCalculators={setDamageCalculators}
+                                globalCheckedConditions={globalCheckedConditions}
+                                setGlobalCheckedConditions={setGlobalCheckedConditions}
+                                vuln={vuln}
+                                setVuln={setVuln}
+                            />
+                        )}
+                    </div>
+
+                    {/* Stats Section - Mobile */}
+                    <StatsSection selectedHero={selectedHero} 
+                    finalStats={finalStats} onSave={saveState} onLoad={loadState} />
                 </div>
                 {/* Modal Overlay */}
                 {infoModalOpen && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-                        <div className="bg-gray-800 text-white rounded-lg shadow-2xl w-full max-w-2xl p-6 relative">
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 p-4">
+                        <div className="bg-gray-800 text-white rounded-lg shadow-2xl w-full max-w-2xl p-4 sm:p-6 relative max-h-[90vh] overflow-y-auto">
                             <button
                                 className="absolute top-2 right-4 text-gray-400 hover:text-white text-lg font-bold"
                                 onClick={() => setInfoModalOpen(false)}
@@ -273,7 +367,7 @@ export default function App() {
                                 <span>Game Version: 1.52.0.1700 (2.16a)</span>
                             </div>
                             {/* Sources/Tools */}
-                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs text-center">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs text-center">
                                 {/* Lace/Prinn */}
                                 <div className="flex flex-col items-center">
                                     <a className="underline" href="https://www.youtube.com/@WilfridWong" target="_blank" rel="noopener noreferrer">

@@ -61,9 +61,9 @@ export default function StatsSection({ selectedHero, finalStats, onSave, onLoad 
 
     return (
         <>
-            <div className="fixed right-10 w-[350px]">
-                <div className="flex flex-col place-self-end p-2 gap-2">
-                    <div className="flex items-center gap-2 ml-auto">
+            <div className="xl:fixed xl:right-10 xl:w-[350px] xl:top-12 w-full">
+                <div className="flex flex-col xl:place-self-end p-2 gap-2">
+                    <div className="flex items-center gap-2 xl:ml-auto justify-center xl:justify-end">
                         <button
                             onClick={onSave}
                             className="cursor-pointer px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded transition-colors duration-200 shadow"
@@ -77,7 +77,7 @@ export default function StatsSection({ selectedHero, finalStats, onSave, onLoad 
                             Load
                         </button>
                     </div>
-                    <div className="flex items-center gap-2 ml-auto mt-1">
+                    <div className="flex items-center gap-2 xl:ml-auto xl:mt-1 justify-center xl:justify-end flex-wrap">
                         <h1 className="text-xs font-medium text-white flex items-center px-2">
                             Expand Stats
                         </h1>
@@ -122,7 +122,7 @@ export default function StatsSection({ selectedHero, finalStats, onSave, onLoad 
                         </button>
                     </div>
                 </div>
-                <Card className="flex flex-col max-h-[calc(95vh-6rem)] gap-2 overflow-y-scroll">
+                <Card className="flex flex-col xl:max-h-[calc(95vh-6rem)] max-h-[400px] gap-2 overflow-y-scroll">
                     {statsConfig.categories.map((category) => (
                         <StatCategory key={category.id} title={category.name} foldVersion={foldVersion} foldState={foldState}>
                             {category.stats.map((statRef) => {

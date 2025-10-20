@@ -31,10 +31,10 @@ export default function HeroSection({ selectedHero, setSelectedHero, heroLevel, 
     }, [selectedHero]);
 
     return (
-        <div className="fixed">
+        <div className="xl:fixed xl:left-10 xl:top-12 xl:w-[290px]">
             {/* Hero */}
             <Card className="text-center">
-                <div className="flex justify-center">
+                <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
                     <ImageTooltip
                         content={
                             <img
@@ -55,7 +55,7 @@ export default function HeroSection({ selectedHero, setSelectedHero, heroLevel, 
                             width="100"
                         />
                     </ImageTooltip>
-                    <div className="self-center pl-5">
+                    <div className="flex flex-col items-center sm:items-start">
                         <select
                             value={selectedHero}
                             onChange={(e) => setSelectedHero(e.target.value)}

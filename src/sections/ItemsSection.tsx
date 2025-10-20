@@ -151,9 +151,9 @@ export default function ItemsSection({ items, setItems }: ItemsSectionProps) {
     }, [stopAutoScroll]);
 
     return (
-        <div className="p-4">
+        <div className="p-2 sm:p-4">
             <div 
-                className="grid grid-cols-3 gap-4 px-4"
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 px-2 sm:px-4"
                 onDragOver={handleDragOver}
             >
                 {items.map((card, cardIndex) => (
@@ -221,7 +221,7 @@ export default function ItemsSection({ items, setItems }: ItemsSectionProps) {
                             setDragOverPosition(null);
                             stopAutoScroll();
                         }}
-                        className="h-[400px] max-h-[400px] relative"
+                        className="h-[400px] max-h-[400px] relative min-h-[300px] sm:min-h-[400px]"
                     >
                         {/* Vertical Gutter Drop Indicator - Left */}
                         {dragOverIndex === cardIndex && dragOverPosition === 'left' && isDragging && draggingCardIndex.current !== cardIndex && (
@@ -361,7 +361,7 @@ export default function ItemsSection({ items, setItems }: ItemsSectionProps) {
 
                 {/* Add New Card Button */}
                 <div 
-                    className="h-[400px] max-h-[400px] flex justify-center items-center relative"
+                    className="h-[400px] max-h-[400px] min-h-[300px] sm:min-h-[400px] flex justify-center items-center relative"
                     onDragOver={(e) => {
                         e.preventDefault();
                         e.dataTransfer.dropEffect = "move";

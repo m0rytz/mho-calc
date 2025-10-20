@@ -41,3 +41,28 @@ input[type="number"]:focus::-webkit-outer-spin-button {
   font-weight: 700;
   font-style: normal;
 }
+
+/* Responsive improvements */
+@media (max-width: 640px) {
+  .grid-cols-3 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+}
+
+/* Ensure proper scrolling on mobile */
+@media (max-width: 1280px) {
+  body {
+    overflow-x: auto;
+  }
+}
+
+/* Touch-friendly improvements */
+@media (hover: none) and (pointer: coarse) {
+  button, input, select {
+    min-height: 44px;
+  }
+  
+  .cursor-pointer {
+    cursor: default;
+  }
+}
