@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Card } from "../components";
 import { type StatConfig, gemStats, gemBonuses } from "../data/infinity";
 
 type InfinitySectionProps = {

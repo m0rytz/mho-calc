@@ -1,4 +1,3 @@
-import { Card } from '../components';
 import { conditionLabels } from "../data/stats";
 
 type DamageSectionProps = {
