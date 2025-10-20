@@ -1,73 +1,105 @@
-# React + TypeScript + Vite
+# MHO Stat Calculator/Planner
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Stat calculator and planner for in Marvel Heroes Omega. Build with detailed stat calculations, damage analysis, and customizable displays.
 
-Currently, two official plugins are available:
+- Game Version: 1.52.0.1700 (2.16a)
+- MHServer Version: v0.8.0
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## React Compiler
+### Stat Calculator
+- **Item/Buff Management**
+- **Infinity System**
+- **Hero Synergy**
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Stat Display
+- **Customizable Categories**
+- **Select Stats to Display/Hide**
+- **Expandable Sections**
 
-## Expanding the ESLint configuration
+### Damage Calculator
+- **Normal, Crit, Brutal Damage**
+- **DMG vs (Condition)**
+- **Keyword System**
+- **DPS Analysis**
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Supported Stats
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+#### Core Stats
+- **Health** (Level Scaling)
+- **Spirit/Resource and Cost Reduction** (Level Scaling if applicable)
+- **Base Stats from Archetype and Traits** (Except hero-sepcific keyword Base DMG)
+- **Only Level 60 Attributes** (Can be adjusted in the Item Section)
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+#### Damage Stats
+- **Base Damage** (Primary Attributes and Applicable Traits)
+- **Damage Types**
+- **Critical Hit/Damage**
+- **Damage Type Critical Hit**
+- **Brutal Strike/Damage**
+- **Damage Type Brutal Strike** (WIP)
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+#### Defense Stats
+- **Damage Reduction**
+- **Defense**
+- **Deflect**
+- **Dodge**
+- **Health Regeneration**
+- **Health On Hit**
+- **Health On Kill**
+- **Reduced DMG from (Type)**
+
+## How to Use
+
+1. **Select Your Hero**
+2. **Add Items and Stats**
+3. **Allocate Infinity**
+4. **Activate Synergies**
+5. **Calculate Damage**
+- Note: The "Base Damage" you enter in the damage calculator should be the damage value before any items, buff, infinity, and synergy.
+
+## Technical Features
+
+- **State Persistence**: Saves your builds locally
+- **Real-time Updates**: Instant calculations as you modify stats
+
+## TODO
+
+- **[Damage Type] Brutal Strike**: Damage type-specific brutal strike
+- **Average Effective Health**
+- **DPS**: To include skill duration and cooldown
+- **Build Sharing**: Export/import build configurations
+
+## Development
+
+### Prerequisites
+- Node.js 16+
+- npm or yarn
+
+### Installation
+```bash
+git clone https://github.com/m0rytz/mho-calc.git
+cd mho-calc
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Build
+```bash
+npm run build
 ```
+
+## Credits
+
+- [Alex Bond's Database Browser](https://github.com/AlexBond2/MHServerEmu)
+- [Crypto137's MHDataParser](https://github.com/Crypto137/MHDataParser)
+- [Lace / Wilfrid Wong](https://www.youtube.com/@WilfridWong)
+- Prinn's Spreadsheet
+
+## Disclaimer
+
+All Marvel-related visuals and characters belong to Marvel Entertainment, LLC and Gazillion. This is a fan-made project and is not affiliated with Marvel or Gazillion.
+
+---
+
+*Built with ❤️ for the MHO community*
