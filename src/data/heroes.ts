@@ -1761,6 +1761,33 @@ export const heroes: Hero[] = [
       type: "flat",
     },
   },
+  {
+    name: "Shawn",
+    archetype1: "Racist",
+    archetype2: "Femboy",
+    combatType: "Melee Combatant",
+    attributes: {
+      Durability: 1,
+      Strength: 1,
+      Fighting: 1,
+      Speed: 1,
+      Energy: 1,
+      Intelligence: 1,
+    },
+    trait1: "Crit Hit%",
+    trait3: "Health Regen.",
+    moveSpeed: 69,
+    spirit1: {
+      name: "Wrath",
+      value: 69,
+      type: "flat",
+    },
+    spirit2: {
+      name: "",
+      value: 0,
+      type: "flat",
+    },
+  },
 ];
 
 export const archetype1list: Record<string, AttributeKey[]> = {
