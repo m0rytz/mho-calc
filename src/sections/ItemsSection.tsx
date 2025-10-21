@@ -238,13 +238,13 @@ export default function ItemsSection({ items, setItems }: ItemsSectionProps) {
                         )}
                         
                         <Card
-                            className="h-full p-2 flex flex-col border-gray-500"
+                            className="h-full p-2 sm:p-3 flex flex-col border-gray-500"
                         >
                         {/* Top Row */}
                         <div className="flex items-center">
                             <button
                                 onClick={() => toggleItemEnabled(card.id)}
-                                className={`mr-2 px-2 py-1 text-xs font-bold rounded transition-colors duration-200 ${card.enabled
+                                className={`mr-2 px-2 py-1 text-[0.6rem] font-bold rounded transition-colors duration-200 ${card.enabled
                                         ? 'bg-blue-600 hover:bg-blue-700 text-white'
                                         : 'bg-gray-600 hover:bg-gray-700 text-gray-300'
                                     }`}
@@ -263,7 +263,7 @@ export default function ItemsSection({ items, setItems }: ItemsSectionProps) {
                             />
                             <button
                                 onClick={() => deleteCard(card.id)}
-                                className="ml-2 text-red-400 font-bold"
+                                    className="ml-2 text-red-400 hover:text-red-600 font-bold cursor-pointer"
                             >
                                 ✕
                             </button>
@@ -311,35 +311,36 @@ export default function ItemsSection({ items, setItems }: ItemsSectionProps) {
                                             onDragEnd={() => {
                                                 draggingStatRef.current = null;
                                             }}
-                                            className="grid grid-cols-[60px_155px_15px] items-center gap-6 py-1"
+                                            className="grid grid-cols-[1fr_2fr_auto] sm:grid-cols-[80px_155px_15px] items-center gap-2 sm:gap-6 py-1"
                                         >
-                                        <div className="relative w-26">
-                                            <input
-                                                type="number"
-                                                value={statObj.value}
-                                                onChange={(e) =>
-                                                    updateStatValue(
-                                                        card.id,
-                                                        index,
-                                                        parseFloat(e.target.value) || 0
-                                                    )
-                                                }
-                                                onFocus={() => setFocusedInput({ cardId: card.id, statIndex: index })}
-                                                onBlur={() => setFocusedInput(null)}
-                                                className={`w-20 text-sm text-white p-1 pr-5 border border-gray-500 focus:outline-none rounded ${statObj.type === "fixed" ? "hidden" : ""}`}
-                                            />
-
-                                            {statObj.type === "percent" && (
-                                                <span className="absolute right-7.5 top-1/2 transform -translate-y-1/2 text-white">
-                                                    %
-                                                </span>
-                                            )}
+                                        <div className="flex-shrink-0 w-21">
+                                            <div className="flex items-center rounded-md bg-white/5 pl-3 outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-indigo-600 dark:outline-gray-600 dark:has-[input:focus-within]:outline-indigo-500">
+                                                <input
+                                                    type="number"
+                                                    value={statObj.value}
+                                                    onChange={(e) =>
+                                                        updateStatValue(
+                                                            card.id,
+                                                            index,
+                                                            parseFloat(e.target.value) || 0
+                                                        )
+                                                    }
+                                                    onFocus={() => setFocusedInput({ cardId: card.id, statIndex: index })}
+                                                    onBlur={() => setFocusedInput(null)}
+                                                    className={`block min-w-0 grow py-0.5 pr-3 text-base text-white placeholder:text-gray-400 focus:outline-none sm:text-sm/6 ${statObj.type === "fixed" ? "hidden" : ""}`}
+                                                />
+                                                {statObj.type === "percent" && (
+                                                    <div className="shrink-0 text-base text-gray-500 select-none sm:text-sm/6 dark:text-gray-400 pr-3">
+                                                        %
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
 
-                                        <span className="text-white pl-0.5">{statObj.stat}</span>
+                                            <span className="text-white text-xs sm:text-[0.75rem] pl-0.5 truncate">{statObj.stat}</span>
 
                                         <button
-                                            className="ml-2 text-red-400"
+                                                className="ml-2 text-red-400 hover:text-red-600 text-[0.75rem] sm:text-base flex-shrink-0 cursor-pointer"
                                             onClick={() => removeStatFromCard(card.id, index)}
                                         >
                                             ✕
@@ -392,7 +393,7 @@ export default function ItemsSection({ items, setItems }: ItemsSectionProps) {
                     
                     <button
                         onClick={addCard}
-                        className="cursor-pointer flex justify-center items-center text-md font-bold text-white border border-white rounded p-2 hover:bg-white hover:text-black transition"
+                        className="cursor-pointer flex justify-center items-center text-sm sm:text-md font-bold text-white border border-white rounded p-3 sm:p-2 hover:bg-white hover:text-black transition w-full sm:w-auto"
                     >
                         + Add Item/Buff
                     </button>

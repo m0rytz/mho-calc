@@ -2,21 +2,16 @@ html {
   background: radial-gradient(black, #011224);
 }
 
-/* ===== keep the native controls but hide them visually by default ===== */
+/* ===== hide number input arrows completely ===== */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
-  opacity: 0;                 /* hide visually */
-  pointer-events: none;       /* don't catch clicks when hidden */
-  transition: opacity 0.12s ease;
+  -webkit-appearance: none;
+  margin: 0;
 }
 
-/* show on hover or focus */
-input[type="number"]:hover::-webkit-inner-spin-button,
-input[type="number"]:hover::-webkit-outer-spin-button,
-input[type="number"]:focus::-webkit-inner-spin-button,
-input[type="number"]:focus::-webkit-outer-spin-button {
-  opacity: 1;
-  pointer-events: auto;
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
 }
 
 /* Scroll-bar */

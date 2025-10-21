@@ -309,7 +309,7 @@ export const ALL_AVAILABLE_STATS: StatConfig[] = [
     id: "dmg-percent",
     name: "DMG%",
     tooltip: "Sources: Converted DMG Rating",
-    format: "{value.2f}%",
+    format: "{value.1f}%",
     showWhenExpanded: false,
   },
   {
