@@ -456,7 +456,7 @@ const StatsManager: React.FC<StatsManagerProps> = ({ config, onConfigChange, onC
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
       <div ref={modalRef} className="bg-[#081f39] rounded-lg p-6 max-w-4xl w-full h-[90vh] max-h-[90vh] overflow-y-auto border border-gray-600">
         <div className="flex justify-end items-center mb-4">
           <button
@@ -534,7 +534,7 @@ const StatsManager: React.FC<StatsManagerProps> = ({ config, onConfigChange, onC
       </div>
 
       {showStatSelector && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-60">
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-60">
           <div ref={statSelectorRef} className="bg-[#081f39] rounded-lg p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto border border-gray-600">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold text-white">Select Stat to Add</h3>

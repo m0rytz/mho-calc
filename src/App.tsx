@@ -457,7 +457,7 @@ export default function App() {
                 </div>
                 {/* Modal Overlay */}
                 {infoModalOpen && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 p-4">
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
                         <div ref={infoModalRef} className="bg-gray-800 text-white rounded-lg shadow-2xl w-full max-w-2xl p-4 sm:p-6 relative max-h-[90vh] overflow-y-auto">
                             <button
                                 className="absolute top-2 right-4 text-gray-400 hover:text-white text-lg font-bold"
@@ -468,10 +468,11 @@ export default function App() {
                             </button>
                             {/* MHO Calc Info */}
                             <div className="mb-4 text-xs text-center">
-                                <p className="font-bold">MHO Calculator v0.6.0</p>
-                                <p className="font-bold">by ken</p>
+                                <p className="font-bold">MHO Calculator</p>
+                                <p>by ken</p>
                                 <br />
-                                <span>Game Version: 1.52.0.1700 (2.16a)</span>
+                                <p>MHServerEmu</p>
+                                <p>Game Version: 1.52.0.1700 (2.16a)</p>
                             </div>
                             {/* Sources/Tools */}
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs text-center">
