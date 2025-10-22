@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import type { StatsConfiguration, StatCategoryConfig, StatConfig, StatReference } from '../types/statsConfig';
 import { DEFAULT_STATS_CONFIG, ALL_AVAILABLE_STATS, resolveStatReference } from '../types/statsConfig';
 
@@ -56,6 +56,7 @@ const StatItem: React.FC<StatItemProps> = ({ statRef, stat, onDelete, onEdit }) 
       draggable
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
+      data-stat-item
     >
       <div className="flex-1">
         <div className="font-medium text-sm text-white">{stat.name + " "}
@@ -101,6 +102,7 @@ const CategoryItem: React.FC<CategoryItemProps> = ({
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState(category.name);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
 
   const handleSave = () => {
     const updatedCategory: StatCategoryConfig = {
@@ -118,17 +120,30 @@ const CategoryItem: React.FC<CategoryItemProps> = ({
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
+    const children = Array.from((e.currentTarget as HTMLElement).querySelectorAll('[data-stat-item]')) as HTMLElement[];
+    if (children.length === 0) {
+      setDragOverIndex(0);
+      return;
+    }
+
+    const mouseY = e.clientY;
+    let index = children.findIndex((child) => {
+      const r = child.getBoundingClientRect();
+      const mid = r.top + r.height / 2;
+      return mouseY < mid;
+    });
+    if (index === -1) index = children.length;
+    index = Math.max(0, Math.min(category.stats.length, index));
+    setDragOverIndex(index);
   };
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     const statId = e.dataTransfer.getData('text/plain');
-    const rect = e.currentTarget.getBoundingClientRect();
-    const y = e.clientY - rect.top;
-    const itemHeight = 60; // Approximate height of each stat item
-    const newIndex = Math.floor(y / itemHeight);
-    
-    onStatReorder(category.id, statId, newIndex);
+    let targetIndex = dragOverIndex ?? 0;
+    targetIndex = Math.max(0, Math.min(category.stats.length, targetIndex));
+    onStatReorder(category.id, statId, targetIndex);
+    setDragOverIndex(null);
   };
 
   return (
@@ -202,19 +217,27 @@ const CategoryItem: React.FC<CategoryItemProps> = ({
           className="p-3 space-y-2 bg-gray-800"
           onDragOver={handleDragOver}
           onDrop={handleDrop}
+          onDragLeave={() => setDragOverIndex(null)}
         >
-          {category.stats.map((statRef) => {
+          {dragOverIndex === 0 && (
+            <div className="h-1 bg-blue-500 rounded-full opacity-80" />
+          )}
+          {category.stats.map((statRef, idx) => {
             const stat = resolveStatReference(statRef);
             if (!stat) return null;
             
             return (
-              <StatItem
-                key={stat.id}
-                statRef={statRef}
-                stat={stat}
-                onDelete={onStatDelete}
-                onEdit={onStatEdit}
-              />
+              <React.Fragment key={stat.id}>
+                <StatItem
+                  statRef={statRef}
+                  stat={stat}
+                  onDelete={onStatDelete}
+                  onEdit={onStatEdit}
+                />
+                {dragOverIndex === idx + 1 && (
+                  <div className="h-1 bg-blue-500 rounded-full opacity-80" />
+                )}
+              </React.Fragment>
             );
           })}
         </div>
@@ -229,8 +252,28 @@ const StatsManager: React.FC<StatsManagerProps> = ({ config, onConfigChange, onC
   const [showStatSelector, setShowStatSelector] = useState(false);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
   const [statSearchQuery, setStatSearchQuery] = useState('');
+  const modalRef = useRef<HTMLDivElement>(null);
+  const statSelectorRef = useRef<HTMLDivElement>(null);
 
   const generateId = () => Math.random().toString(36).substr(2, 9);
+
+  // Handle click outside to close modals
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (showStatSelector && statSelectorRef.current && !statSelectorRef.current.contains(event.target as Node)) {
+        setShowStatSelector(false);
+        setSelectedCategoryId(null);
+        setStatSearchQuery('');
+      } else if (!showStatSelector && modalRef.current && !modalRef.current.contains(event.target as Node)) {
+        onClose();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showStatSelector, onClose]);
 
   // Common abbreviations and synonyms for stat searching
   const statAbbreviations: Record<string, string[]> = {
@@ -414,7 +457,7 @@ const StatsManager: React.FC<StatsManagerProps> = ({ config, onConfigChange, onC
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-[#081f39] rounded-lg p-6 max-w-4xl w-full h-[90vh] max-h-[90vh] overflow-y-auto border border-gray-600">
+      <div ref={modalRef} className="bg-[#081f39] rounded-lg p-6 max-w-4xl w-full h-[90vh] max-h-[90vh] overflow-y-auto border border-gray-600">
         <div className="flex justify-end items-center mb-4">
           <button
             onClick={onClose}
@@ -492,7 +535,7 @@ const StatsManager: React.FC<StatsManagerProps> = ({ config, onConfigChange, onC
 
       {showStatSelector && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-60">
-          <div className="bg-[#081f39] rounded-lg p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto border border-gray-600">
+          <div ref={statSelectorRef} className="bg-[#081f39] rounded-lg p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto border border-gray-600">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold text-white">Select Stat to Add</h3>
               <button

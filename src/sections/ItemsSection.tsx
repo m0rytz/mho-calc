@@ -328,7 +328,7 @@ export default function ItemsSection({ items, setItems }: ItemsSectionProps) {
                                                         }
                                                         onFocus={() => setFocusedInput({ cardId: card.id, statIndex: index })}
                                                         onBlur={() => setFocusedInput(null)}
-                                                        className={`block min-w-0 grow py-0.5 pr-3 text-base text-white placeholder:text-gray-400 focus:outline-none sm:text-sm/6 ${statObj.type === "fixed" ? "hidden" : ""}`}
+                                                        className={`block min-w-0 grow pr-2 text-base text-white placeholder:text-gray-400 focus:outline-none sm:text-sm/6 ${statObj.type === "fixed" ? "hidden" : ""}`}
                                                     />
                                                     {statObj.type === "percent" && (
                                                         <div className="shrink-0 text-base text-gray-500 select-none sm:text-sm/6 dark:text-gray-400 pr-3">
@@ -338,10 +338,10 @@ export default function ItemsSection({ items, setItems }: ItemsSectionProps) {
                                                 </div>
                                             </div>
 
-                                            <span className="text-white text-xs sm:text-[0.75rem] pl-0.5 truncate">{statObj.stat}</span>
+                                            <span className="text-white text-xs sm:text-[0.75rem] truncate">{statObj.stat}</span>
 
                                             <button
-                                                className="ml-2 text-red-400 hover:text-red-600 text-[0.75rem] sm:text-base flex-shrink-0 cursor-pointer"
+                                                className="text-red-400 hover:text-red-600 text-[0.75rem] sm:text-base flex-shrink-0 cursor-pointer"
                                                 onClick={() => removeStatFromCard(card.id, index)}
                                             >
                                                 ✕

@@ -16,9 +16,11 @@ type StatsSectionProps = {
     finalStats: Record<string, number>;
     onSave: () => void;
     onLoad: () => void;
+    onExportFile?: () => void;
+    onImportFile?: (file: File) => void;
 };
 
-export default function StatsSection({ selectedHero, finalStats, onSave, onLoad }: StatsSectionProps) {
+export default function StatsSection({ selectedHero, finalStats, onSave, onLoad, onExportFile, onImportFile }: StatsSectionProps) {
     const hero = heroes.find((h) => h.name === selectedHero);
     const [expandState, setExpandState] = useState(false);
     const [foldVersion, setFoldVersion] = useState(0);
@@ -59,6 +61,20 @@ export default function StatsSection({ selectedHero, finalStats, onSave, onLoad 
         setFoldVersion((v) => v + 1);
     };
 
+    const fileInputRef = React.useRef<HTMLInputElement | null>(null);
+
+    const handleImportClick = () => {
+        if (fileInputRef.current) fileInputRef.current.click();
+    };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files && e.target.files[0];
+        if (file && onImportFile) {
+            onImportFile(file);
+            e.currentTarget.value = "";
+        }
+    };
+
     return (
         <>
             <div className="xl:fixed xl:right-10 xl:w-[350px] xl:top-12 w-full">
@@ -76,6 +92,25 @@ export default function StatsSection({ selectedHero, finalStats, onSave, onLoad 
                         >
                             Load
                         </button>
+                        <button
+                            onClick={onExportFile}
+                            className="cursor-pointer px-3 py-1 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-semibold rounded transition-colors duration-200 shadow"
+                        >
+                            Export
+                        </button>
+                        <button
+                            onClick={handleImportClick}
+                            className="cursor-pointer px-3 py-1 bg-amber-700 hover:bg-amber-800 text-white text-xs font-semibold rounded transition-colors duration-200 shadow"
+                        >
+                            Import
+                        </button>
+                        <input
+                            ref={fileInputRef}
+                            type="file"
+                            accept="application/json,.json"
+                            onChange={handleFileChange}
+                            className="hidden"
+                        />
                     </div>
                     <div className="flex items-center gap-2 xl:ml-auto xl:mt-1 justify-center xl:justify-end flex-wrap">
                         <h1 className="text-xs font-medium text-white flex items-center px-2">

@@ -1,5 +1,5 @@
 import "./App.css";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { type Item, conditionLabels } from "./data/stats";
 import { type Hero, heroes } from "./data/heroes";
 import { calculateItemTotals, calculateFinalStats } from "./utils/statCalculate";
@@ -58,6 +58,9 @@ export default function App() {
         (showToast as any)._tId = window.setTimeout(() => setToast({ message: "", visible: false }), 1500);
     };
 
+    // Ref for info modal
+    const infoModalRef = useRef<HTMLDivElement>(null);
+
     const itemTotals = useMemo(() => calculateItemTotals(items), [items]);
     const finalStats = useMemo(
         () => calculateFinalStats(hero as Hero, heroLevel, combatState, heroAttributes, infinityAttributes, itemTotals, infinity, synergy),
@@ -67,6 +70,22 @@ export default function App() {
     useEffect(() => {
         loadState();
     }, []);
+
+    // Handle click outside to close info modal
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (infoModalOpen && infoModalRef.current && !infoModalRef.current.contains(event.target as Node)) {
+                setInfoModalOpen(false);
+            }
+        };
+
+        if (infoModalOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+            return () => {
+                document.removeEventListener('mousedown', handleClickOutside);
+            };
+        }
+    }, [infoModalOpen]);
 
     const saveState = () => {
         const stateToSave = {
@@ -153,6 +172,94 @@ export default function App() {
         }
     };
 
+    const getCurrentState = () => ({
+        selectedHero,
+        heroLevel,
+        combatState,
+        heroAttributes,
+        infinityAttributes,
+        items,
+        infinity,
+        pointsRemaining,
+        ranks,
+        usedPerGem,
+        synergy,
+        activatedHeroes,
+        damageCalculators,
+        globalCheckedConditions,
+        vuln,
+    });
+
+    const applyLoadedState = (parsedState: any) => {
+        if (parsedState.selectedHero) setSelectedHero(parsedState.selectedHero);
+        if (parsedState.heroLevel) setHeroLevel(parsedState.heroLevel);
+        if (parsedState.combatState !== undefined) setCombatState(parsedState.combatState);
+        if (parsedState.heroAttributes) setHeroAttributes(parsedState.heroAttributes);
+        if (parsedState.infinityAttributes) setInfinityAttributes(parsedState.infinityAttributes);
+        if (parsedState.items) {
+            const itemsWithEnabled = parsedState.items.map((item: any) => ({
+                ...item,
+                enabled: item.enabled !== undefined ? item.enabled : true
+            }));
+            setItems(itemsWithEnabled);
+        }
+        if (parsedState.infinity) setInfinity(parsedState.infinity);
+        if (parsedState.pointsRemaining !== undefined) setPointsRemaining(parsedState.pointsRemaining);
+        if (parsedState.ranks) setRanks(parsedState.ranks);
+        if (parsedState.usedPerGem) setUsedPerGem(parsedState.usedPerGem);
+        if (parsedState.synergy) setSynergy(parsedState.synergy);
+        if (parsedState.activatedHeroes) setActivatedHeroes(parsedState.activatedHeroes);
+        if (parsedState.damageCalculators && parsedState.damageCalculators.length) {
+            const converted = parsedState.damageCalculators.map((c: any) => {
+                if (c.baseMin !== undefined && c.baseMax !== undefined) {
+                    return { baseMin: c.baseMin, baseMax: c.baseMax, attackSpeed: c.attackSpeed ?? 1, keywords: c.keywords ?? c.tags ?? [] };
+                }
+                if (c.baseMax !== undefined && c.baseMin === undefined) {
+                    return { baseMin: Number(c.baseMax) / 1.5, baseMax: c.baseMax, attackSpeed: c.attackSpeed ?? 1, keywords: c.keywords ?? c.tags ?? [] };
+                }
+                if (c.baseMin !== undefined && c.baseMax === undefined) {
+                    return { baseMin: c.baseMin, baseMax: Number(c.baseMin) * 1.5, attackSpeed: c.attackSpeed ?? 1, keywords: c.keywords ?? c.tags ?? [] };
+                }
+                return { baseMin: 0, baseMax: 0, attackSpeed: c.attackSpeed ?? 1, keywords: [] };
+            });
+            setDamageCalculators(converted);
+        }
+        if (parsedState.globalCheckedConditions) setGlobalCheckedConditions(parsedState.globalCheckedConditions);
+        if (parsedState.vuln !== undefined) setVuln(parsedState.vuln);
+    };
+
+    const exportStateToFile = () => {
+        try {
+            const data = JSON.stringify(getCurrentState(), null, 2);
+            const blob = new Blob([data], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `mho-calc-save-${new Date().toISOString().slice(0,10)}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast("Downloaded");
+        } catch (error) {
+            console.error("Failed to export state:", error);
+            showToast("Export Failed");
+        }
+    };
+
+    const importStateFromFile = async (file: File) => {
+        try {
+            const text = await file.text();
+            const parsed = JSON.parse(text);
+            applyLoadedState(parsed);
+            localStorage.setItem("appState", JSON.stringify(parsed));
+            showToast("Imported");
+        } catch (error) {
+            console.error("Failed to import state:", error);
+            showToast("Import Failed");
+        }
+    };
+
 
     return (
         <div className="relative min-h-screen py-4 px-2 sm:py-8 sm:px-4 lg:py-12 lg:px-10">
@@ -179,7 +286,7 @@ export default function App() {
 
                     {/* Stats */}
                     <StatsSection selectedHero={selectedHero} 
-                    finalStats={finalStats} onSave={saveState} onLoad={loadState} />
+                    finalStats={finalStats} onSave={saveState} onLoad={loadState} onExportFile={exportStateToFile} onImportFile={importStateFromFile} />
 
                     {/* Tabs */}
                     <div className="grid grid-cols-[290px_minmax(500px,_1fr)_345px] justify-center gap-4 p-4">
@@ -346,12 +453,12 @@ export default function App() {
 
                     {/* Stats Section - Mobile */}
                     <StatsSection selectedHero={selectedHero} 
-                    finalStats={finalStats} onSave={saveState} onLoad={loadState} />
+                    finalStats={finalStats} onSave={saveState} onLoad={loadState} onExportFile={exportStateToFile} onImportFile={importStateFromFile} />
                 </div>
                 {/* Modal Overlay */}
                 {infoModalOpen && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 p-4">
-                        <div className="bg-gray-800 text-white rounded-lg shadow-2xl w-full max-w-2xl p-4 sm:p-6 relative max-h-[90vh] overflow-y-auto">
+                        <div ref={infoModalRef} className="bg-gray-800 text-white rounded-lg shadow-2xl w-full max-w-2xl p-4 sm:p-6 relative max-h-[90vh] overflow-y-auto">
                             <button
                                 className="absolute top-2 right-4 text-gray-400 hover:text-white text-lg font-bold"
                                 onClick={() => setInfoModalOpen(false)}
