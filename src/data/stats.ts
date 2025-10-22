@@ -119,7 +119,7 @@ export const itemStats = [
     category: "DMG vs",
     stats: [
       { name: "Normals/Elites (Rating)", type: "flat" },
-      { name: "Normals/Elites (DMG %)", type: "percent" },
+      { name: "Normals/Elites (%)", type: "percent" },
       { name: "Champions", type: "percent" },
       { name: "Bosses", type: "percent" },
       { name: "Targeting You", type: "flat" },

@@ -255,7 +255,7 @@ export function calculateFinalStats(
   // ===== DMG vs =====
   finalStats["DMG vs Normals/Elites"] =
     (itemTotals["Normals/Elites (Rating)"] ?? 0) / 40 +
-    (itemTotals["Normals/Elites (DMG %)"] ?? 0) +
+    (itemTotals["Normals/Elites (%)"] ?? 0) +
     (synergy["DMG vs Normals/Elites"] ?? 0);
   finalStats["DMG vs Champions"] = (itemTotals["Champions"] ?? 0) / 40;
   finalStats["DMG vs Bosses"] =
