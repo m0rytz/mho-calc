@@ -326,7 +326,10 @@ export default function ItemsSection({ items, setItems }: ItemsSectionProps) {
                                                                 parseFloat(e.target.value) || 0
                                                             )
                                                         }
-                                                        onFocus={() => setFocusedInput({ cardId: card.id, statIndex: index })}
+                                                        onFocus={(e) => {
+                                                            setFocusedInput({ cardId: card.id, statIndex: index });
+                                                            e.target.select();
+                                                        }}
                                                         onBlur={() => setFocusedInput(null)}
                                                         className={`block min-w-0 grow pr-2 text-base text-white placeholder:text-gray-400 focus:outline-none sm:text-sm/6 ${statObj.type === "fixed" ? "hidden" : ""}`}
                                                     />

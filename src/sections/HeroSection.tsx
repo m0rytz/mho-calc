@@ -93,6 +93,7 @@ export default function HeroSection({ selectedHero, setSelectedHero, heroLevel, 
                                         const num = parseInt(val, 10);
                                         setHeroLevel(Math.min(Math.max(num, 1), 60));
                                     }}
+                                    onFocus={(e) => e.target.select()}
                                     className="text-md w-16 border border-white rounded-sm text-white text-center"
                                 />
 

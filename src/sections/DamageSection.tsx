@@ -147,6 +147,7 @@ function DamageCalculator({
                         value={baseMin}
                         min={0}
                         onChange={e => setState({ ...state, baseMin: Number(e.target.value) })}
+                        onFocus={(e) => e.target.select()}
                         placeholder="Min"
                     />
                     <label className="text-xs font-semibold text-blue-200 mt-2 mb-1">Base Max DMG</label>
@@ -156,12 +157,14 @@ function DamageCalculator({
                         value={baseMax}
                         min={0}
                         onChange={e => setState({ ...state, baseMax: Number(e.target.value) })}
+                        onFocus={(e) => e.target.select()}
                         placeholder="Max"
                     />
                     <label className="text-xs font-semibold text-blue-200 mt-1 mb-1"> Attack Speed /s</label>
                     <input
                         type="number"
                         step="0.01"
+                        onFocus={(e) => e.target.select()}
                         min={0}
                         className="bg-gray-600 border border-blue-500 rounded px-2 py-1 text-white text-xs w-full focus:ring-blue-400 focus:outline-none"
                         value={attackSpeed}
@@ -335,6 +338,7 @@ export default function DamageSection({
                             value={vuln}
                             min={0}
                             onChange={e => setVuln(Number(e.target.value))}
+                            onFocus={(e) => e.target.select()}
                             placeholder="%"
                         />
                         <span className="ml-1 text-xs text-white">%</span>
