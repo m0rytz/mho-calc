@@ -244,7 +244,7 @@ export default function ItemsSection({ items, setItems }: ItemsSectionProps) {
                             <div className="flex items-center">
                                 <button
                                     onClick={() => toggleItemEnabled(card.id)}
-                                    className={`mr-2 px-2 py-1 text-[0.6rem] font-bold rounded transition-colors duration-200 ${card.enabled
+                                    className={`mr-2 px-2 py-1 text-[0.6rem] font-bold rounded transition-colors duration-200 cursor-pointer ${card.enabled
                                         ? 'bg-blue-600 hover:bg-blue-700 text-white'
                                         : 'bg-gray-600 hover:bg-gray-700 text-gray-300'
                                         }`}

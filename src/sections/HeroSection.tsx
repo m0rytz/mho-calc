@@ -61,7 +61,7 @@ export default function HeroSection({ selectedHero, setSelectedHero, heroLevel, 
                             <select
                                 value={selectedHero}
                                 onChange={(e) => setSelectedHero(e.target.value)}
-                                className="bg-gray-800 p-1 px-2 mb-4 rounded text-white text-sm font-medium"
+                                className="bg-gray-800 p-1 px-2 mb-4 rounded text-white text-sm font-medium cursor-pointer"
                             >
                                 {heroes.map((hero) => (
                                     <option

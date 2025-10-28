@@ -6,36 +6,37 @@ import { type HeroSynergy } from "../data/synergies";
 
 function SynergyStatsPanel({ tempSynergy }: { tempSynergy: Record<string, number> }) {
     return (
-        <Card className="rounded-lg shadow border border-gray-700 p-4 h-fit sticky top-4">
+        <Card className="rounded-lg shadow border border-gray-700 p-4 h-fit">
             <h3 className="font-bold text-lg mb-2 text-white">Synergy Stats</h3>
             {Object.keys(tempSynergy).length === 0 ? (
                 <p className="text-gray-300 text-sm italic">No synergies active</p>
             ) : (
-                <table className="w-full text-sm">
-                    <tbody>
-                        {Object.entries(tempSynergy).map(([stat, value]) => (
-                            <tr key={stat} className="border-b last:border-none">
-                                <td className="py-1 text-left font-medium text-white">{stat}</td>
-                                <td className="py-1 text-right font-semibold text-blue-300">{value}
-                                    <span>{stat === "Durability" ||
-                                        stat === "Strength" ||
-                                        stat === "Fighting" ||
-                                        stat === "Energy" ||
-                                        stat === "Speed" ||
-                                        stat === "Intelligence" ||
-                                        stat === "Health On Hit" ||
-                                        stat === "Spirit On Hit" ||
-                                        stat === "Health On Kill" ||
-                                        stat === "Spirit On Kill" ||
-                                        stat === "Spirit" ||
-                                        stat === "Bonus Credits Per Drop"
-                                        ? "" : "%"}</span>
-                                    {/* TODO */}
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                <div className="max-h-[calc(100vh-6rem)] overflow-auto">
+                    <table className="w-full text-sm">
+                        <tbody>
+                            {Object.entries(tempSynergy).map(([stat, value]) => (
+                                <tr key={stat} className="border-b last:border-none">
+                                    <td className="py-1 text-left font-medium text-white">{stat}</td>
+                                    <td className="py-1 text-right font-semibold text-blue-300">{value}
+                                        <span>{stat === "Durability" ||
+                                            stat === "Strength" ||
+                                            stat === "Fighting" ||
+                                            stat === "Energy" ||
+                                            stat === "Speed" ||
+                                            stat === "Intelligence" ||
+                                            stat === "Health On Hit" ||
+                                            stat === "Spirit On Hit" ||
+                                            stat === "Health On Kill" ||
+                                            stat === "Spirit On Kill" ||
+                                            stat === "Spirit" ||
+                                            stat === "Bonus Credits Per Drop"
+                                            ? "" : "%"}</span>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             )}
         </Card>
     );
@@ -75,9 +76,7 @@ function HeroSynergyCard({
     return (
         <div
             className={`flex items-center bg-gray-800 justify-between rounded-md border p-1 px-4 transition-all duration-200 
-        ${isActive ? "border-green-400 shadow-md" : "border-gray-700 hover:shadow-sm"}
-        ${matchesSearch ? "ring-2 ring-blue-400" : ""}
-        ${isPermanent ? "opacity-70" : ""}`}
+        ${isActive ? "border-green-400 shadow-md" : "border-gray-700 hover:shadow-sm"}`}
         >
             <div className="flex flex-col items-center py-2">
                 <img
@@ -213,7 +212,7 @@ export default function SynergySection({
 
     return (
         <div className="p-6 min-h-screen relative">
-            <div className="flex justify-end items-center mb-4 sticky top-4">
+            <div className="flex justify-end items-center mb-4 sticky top-16">
                 <div className="bg-[#081f39] border border-gray-700 shadow-xl rounded-lg px-4 py-2 flex items-center gap-3 w-full max-w-2xl">
                     <span className="font-bold text-gray-700 mr-3 flex-shrink-0">
                         <span className="text-white">Synergies Active: </span>
@@ -223,7 +222,7 @@ export default function SynergySection({
                         onClick={handleApply}
                         disabled={unchanged}
                         className={`px-3 py-1.5 rounded font-semibold text-white transition
-                            ${unchanged ? "bg-gray-400 cursor-not-allowed" : "bg-green-700 hover:bg-green-800"}`}
+                            ${unchanged ? "bg-gray-400 cursor-not-allowed" : "bg-green-700 hover:bg-green-800 cursor-pointer"}`}
                     >
                         Apply
                     </button>
@@ -231,13 +230,13 @@ export default function SynergySection({
                         onClick={handleCancel}
                         disabled={unchanged}
                         className={`px-3 py-1.5 rounded font-semibold text-white transition
-                            ${unchanged ? "bg-gray-400 cursor-not-allowed" : "bg-sky-700 hover:bg-sky-800"}`}
+                            ${unchanged ? "bg-gray-400 cursor-not-allowed" : "bg-sky-700 hover:bg-sky-800 cursor-pointer"}`}
                     >
                         Cancel
                     </button>
                     <button
                         onClick={handleReset}
-                        className="px-3 py-1.5 bg-gray-300 hover:bg-gray-400 rounded font-semibold text-gray-800"
+                        className="px-3 py-1.5 bg-gray-300 hover:bg-gray-400 rounded font-semibold text-gray-800 cursor-pointer"
                     >
                         Reset
                     </button>
@@ -265,9 +264,9 @@ export default function SynergySection({
                 </div>
             </div>
 
-            <div className="flex flex-col lg:flex-row gap-6">
+            <div className="flex flex-col lg:flex-row items-start gap-6">
                 {/* Stats */}
-                <div className="lg:w-1/4 w-full">
+                <div className="lg:w-1/4 w-full lg:sticky lg:top-16 self-start">
                     <SynergyStatsPanel tempSynergy={tempSynergy} />
                 </div>
 

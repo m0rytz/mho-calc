@@ -37,7 +37,7 @@ export default function App() {
     const [activatedHeroes, setActivatedHeroes] = useState<string[]>([]);
 
     // Damage Section
-    const [damageCalculators, setDamageCalculators] = useState<Array<{ baseMin: number; baseMax: number; attackSpeed: number; keywords?: string[] }>>(() =>
+    const [damageCalculators, setDamageCalculators] = useState<Array<{ baseMin: number; baseMax: number; keywords?: string[] }>>(() =>
         Array(8).fill(null).map(() => ({
             baseMin: 0,
             baseMax: 0,
@@ -70,6 +70,8 @@ export default function App() {
     useEffect(() => {
         loadState();
     }, []);
+
+    
 
     // Handle click outside to close info modal
     useEffect(() => {
@@ -292,7 +294,7 @@ export default function App() {
                     <div className="grid grid-cols-[290px_minmax(500px,_1fr)_345px] justify-center gap-4 p-4">
                         <section className="flex-1 col-start-2 row-start-1">
                             {/* Tab Headers */}
-                            <div className="flex gap-4 border-b border-gray-700 mb-4">
+                            <div className="sticky top-0 z-20 bg-gray-900/80 backdrop-blur flex gap-4 border-b border-gray-700 mb-4 py-2">
                                 <button
                                     onClick={() => setActiveTab("items")}
                                     className={`pb-2 px-4 cursor-pointer ${activeTab === "items" ? "text-blue-500 border-b-2 border-blue-500 font-semibold" : "text-gray-400"
@@ -381,7 +383,7 @@ export default function App() {
                     </div>
 
                     {/* Tab Headers - Mobile */}
-                    <div className="flex gap-2 border-b border-gray-700 mb-4 overflow-x-auto">
+                    <div className="sticky top-0 z-20 bg-gray-900/80 backdrop-blur flex gap-2 border-b border-gray-700 mb-4 overflow-x-auto py-2">
                         <button
                             onClick={() => setActiveTab("items")}
                             className={`pb-2 px-3 cursor-pointer whitespace-nowrap text-sm ${activeTab === "items" ? "text-blue-500 border-b-2 border-blue-500 font-semibold" : "text-gray-400"

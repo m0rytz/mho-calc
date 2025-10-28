@@ -18,19 +18,20 @@ interface StatItemProps {
   stat: StatConfig;
   onDelete: (statId: string) => void;
   onEdit: (statId: string, updatedStatRef: StatReference) => void;
+  highlightPosition?: 'top' | 'bottom' | null;
 }
 
 interface CategoryItemProps {
   category: StatCategoryConfig;
   onEdit: (category: StatCategoryConfig) => void;
   onDelete: (categoryId: string) => void;
-  onAddStat: (categoryId: string) => void;
+  onAddStat: (categoryId: string, insertIndex: number) => void;
   onStatDelete: (statId: string) => void;
   onStatEdit: (statId: string, updatedStatRef: StatReference) => void;
   onStatReorder: (categoryId: string, statId: string, newIndex: number) => void;
 }
 
-const StatItem: React.FC<StatItemProps> = ({ statRef, stat, onDelete, onEdit }) => {
+const StatItem: React.FC<StatItemProps> = ({ statRef, stat, onDelete, onEdit, highlightPosition = null }) => {
   const [isDragging, setIsDragging] = useState(false);
 
   const handleShowWhenExpandedChange = (checked: boolean) => {
@@ -43,6 +44,7 @@ const StatItem: React.FC<StatItemProps> = ({ statRef, stat, onDelete, onEdit }) 
 
   const handleDragStart = (e: React.DragEvent) => {
     e.dataTransfer.setData('text/plain', stat.id);
+    e.dataTransfer.effectAllowed = 'move';
     setIsDragging(true);
   };
 
@@ -50,9 +52,15 @@ const StatItem: React.FC<StatItemProps> = ({ statRef, stat, onDelete, onEdit }) 
     setIsDragging(false);
   };
 
+  const highlightClass = highlightPosition === 'top'
+    ? 'shadow-[inset_0_2px_0_0_rgba(59,130,246,1)]'
+    : highlightPosition === 'bottom'
+      ? 'shadow-[inset_0_-2px_0_0_rgba(59,130,246,1)]'
+      : '';
+
   return (
-    <div 
-      className={`flex items-center justify-between p-2 border border-gray-600 rounded bg-[#081f39] cursor-move ${isDragging ? 'opacity-50' : ''}`}
+    <div
+      className={`flex items-center justify-between p-2 border border-gray-600 rounded bg-[#081f39] cursor-move ${isDragging ? 'opacity-50' : ''} ${highlightClass}`}
       draggable
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
@@ -103,6 +111,54 @@ const CategoryItem: React.FC<CategoryItemProps> = ({
   const [editName, setEditName] = useState(category.name);
   const [isExpanded, setIsExpanded] = useState(false);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+  const [hoverInsertIndex, setHoverInsertIndex] = useState<number | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const dragCalcRaf = useRef<number | null>(null);
+
+  // Initialize transition container
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    el.style.overflow = 'hidden';
+    el.style.transition = 'height 200ms ease';
+    el.style.height = '0px';
+  }, []);
+
+  // Animate expand/collapse
+  useEffect(() => {
+    const el = containerRef.current;
+    const inner = contentRef.current;
+    if (!el || !inner) return;
+
+    if (isExpanded) {
+      // Expand: set to target height then to auto after transition
+      const target = inner.scrollHeight;
+      el.style.height = target + 'px';
+      setIsAnimating(true);
+      const onEnd = () => {
+        el.style.height = 'auto';
+        setIsAnimating(false);
+        el.removeEventListener('transitionend', onEnd);
+      };
+      el.addEventListener('transitionend', onEnd);
+    } else {
+      // Collapse: from current height to 0
+      const current = el.getBoundingClientRect().height;
+      el.style.height = current + 'px';
+      // force reflow
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      el.offsetHeight;
+      el.style.height = '0px';
+      setIsAnimating(true);
+      const onEnd = () => {
+        setIsAnimating(false);
+        el.removeEventListener('transitionend', onEnd);
+      };
+      el.addEventListener('transitionend', onEnd);
+    }
+  }, [isExpanded]);
 
   const handleSave = () => {
     const updatedCategory: StatCategoryConfig = {
@@ -120,12 +176,72 @@ const CategoryItem: React.FC<CategoryItemProps> = ({
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
-    const children = Array.from((e.currentTarget as HTMLElement).querySelectorAll('[data-stat-item]')) as HTMLElement[];
+    const currentTarget = e.currentTarget as HTMLElement;
+    const performCalc = () => {
+      const children = Array.from(currentTarget.querySelectorAll('[data-stat-item]')) as HTMLElement[];
+      if (children.length === 0) {
+        if (dragOverIndex !== 0) setDragOverIndex(0);
+        return;
+      }
+
+      const mouseY = e.clientY;
+      // Find the child under the cursor to use thirds-based decision
+      let computedIndex: number | null = null;
+      for (let i = 0; i < children.length; i++) {
+        const r = children[i].getBoundingClientRect();
+        if (mouseY >= r.top && mouseY <= r.bottom) {
+          const relative = (mouseY - r.top) / r.height; // 0..1
+          if (relative < 0.33) {
+            computedIndex = i; // insert above this item
+          } else if (relative > 0.67) {
+            computedIndex = i + 1; // insert below this item
+          } else {
+            computedIndex = dragOverIndex; // middle third: keep current index
+          }
+          break;
+        }
+      }
+
+      if (computedIndex == null) {
+        // If not inside any item vertically, fallback to edge decision
+        let index = children.findIndex((child) => {
+          const r = child.getBoundingClientRect();
+          const mid = r.top + r.height / 2;
+          return mouseY < mid;
+        });
+        if (index === -1) index = children.length;
+        computedIndex = index;
+      }
+
+      computedIndex = Math.max(0, Math.min(category.stats.length, computedIndex ?? 0));
+      if (computedIndex !== dragOverIndex) setDragOverIndex(computedIndex);
+      dragCalcRaf.current = null;
+    };
+
+    if (dragCalcRaf.current == null) {
+      dragCalcRaf.current = requestAnimationFrame(performCalc);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    const statId = e.dataTransfer.getData('text/plain');
+    let targetIndex = dragOverIndex ?? 0;
+    targetIndex = Math.max(0, Math.min(category.stats.length, targetIndex));
+    onStatReorder(category.id, statId, targetIndex);
+    setDragOverIndex(null);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    // Do not show hover insert while dragging
+    if (dragOverIndex !== null) return;
+    const container = e.currentTarget as HTMLElement;
+    const children = Array.from(container.querySelectorAll('[data-stat-item]')) as HTMLElement[];
     if (children.length === 0) {
-      setDragOverIndex(0);
+      setHoverInsertIndex(0);
       return;
     }
-
     const mouseY = e.clientY;
     let index = children.findIndex((child) => {
       const r = child.getBoundingClientRect();
@@ -134,16 +250,11 @@ const CategoryItem: React.FC<CategoryItemProps> = ({
     });
     if (index === -1) index = children.length;
     index = Math.max(0, Math.min(category.stats.length, index));
-    setDragOverIndex(index);
+    setHoverInsertIndex(index);
   };
 
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    const statId = e.dataTransfer.getData('text/plain');
-    let targetIndex = dragOverIndex ?? 0;
-    targetIndex = Math.max(0, Math.min(category.stats.length, targetIndex));
-    onStatReorder(category.id, statId, targetIndex);
-    setDragOverIndex(null);
+  const handleMouseLeave = () => {
+    setHoverInsertIndex(null);
   };
 
   return (
@@ -156,7 +267,7 @@ const CategoryItem: React.FC<CategoryItemProps> = ({
               value={editName}
               onChange={(e) => setEditName(e.target.value)}
               placeholder="Category Name"
-              className="w-full px-2 py-1 border border-gray-500 rounded text-sm bg-gray-800 text-white placeholder-gray-400"
+              className="w-full px-2 py-1 border border-gray-500 rounded text-md bg-gray-800 text-white placeholder-gray-400"
             />
             <div className="flex space-x-2">
               <button
@@ -177,33 +288,27 @@ const CategoryItem: React.FC<CategoryItemProps> = ({
           <div className="flex items-center justify-between">
             <button
               onClick={() => setIsExpanded(!isExpanded)}
-              className="flex items-center space-x-2 text-left flex-1"
+              className="flex items-center space-x-2 text-left flex-1 cursor-pointer"
             >
               <span className="font-medium text-white">{category.name}</span>
-              <span className="text-gray-300">({category.stats.length} stats)</span>
-              <span className="text-white">{isExpanded ? '▲' : '▼'}</span>
+              <button
+                onClick={() => setIsEditing(true)}
+                className="p-1 text-lg text-gray-400 hover:text-blue-400 rounded transition-colors duration-200 cursor-pointer"
+                title="Edit"
+                style={{ minWidth: '2.25rem', minHeight: '2.25rem' }}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
+                </svg>
+              </button>
+              <span className={`text-white transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}>▼</span>
             </button>
             <div className="flex space-x-1">
               <button
-                onClick={() => onAddStat(category.id)}
-                className="p-1 text-gray-400 hover:text-green-400 rounded transition-colors duration-200"
-                title="Add Stat"
-              >
-                +
-              </button>
-              <button
-                onClick={() => setIsEditing(true)}
-                className="p-1 text-gray-400 hover:text-blue-400 rounded transition-colors duration-200"
-                title="Edit"
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
-                </svg>
-              </button>
-              <button
                 onClick={() => onDelete(category.id)}
-                className="p-1 text-gray-400 hover:text-red-400 rounded transition-colors duration-200"
+                className="p-1 text-lg text-gray-400 hover:text-red-400 rounded transition-colors duration-200 cursor-pointer"
                 title="Delete"
+                style={{ minWidth: '2.25rem', minHeight: '2.25rem' }}
               >
                 ✕
               </button>
@@ -212,20 +317,43 @@ const CategoryItem: React.FC<CategoryItemProps> = ({
         )}
       </div>
 
-      {isExpanded && (
-        <div 
+      <div ref={containerRef}>
+        <div
+          ref={contentRef}
           className="p-3 space-y-2 bg-gray-800"
           onDragOver={handleDragOver}
           onDrop={handleDrop}
-          onDragLeave={() => setDragOverIndex(null)}
+          onDragLeave={() => { setHoverInsertIndex(null); }}
+          onMouseMove={(e) => { if (isExpanded && !isAnimating) handleMouseMove(e); }}
+          onMouseLeave={handleMouseLeave}
         >
-          {dragOverIndex === 0 && (
-            <div className="h-1 bg-blue-500 rounded-full opacity-80" />
+          {isExpanded && dragOverIndex === null && hoverInsertIndex === 0 && (
+            <div className="flex justify-center">
+              <button
+                onClick={() => onAddStat(category.id, 0)}
+                className="px-2 py-1 text-xs bg-blue-700 text-white rounded hover:bg-blue-800 transition-colors duration-200 cursor-pointer"
+                title="Add Stat"
+              >
+                + Add Stat Here
+              </button>
+            </div>
           )}
           {category.stats.map((statRef, idx) => {
             const stat = resolveStatReference(statRef);
             if (!stat) return null;
-            
+
+            // Determine drag highlight position without shifting layout
+            let highlightPosition: 'top' | 'bottom' | null = null;
+            if (dragOverIndex !== null) {
+              if (dragOverIndex === 0 && idx === 0) {
+                highlightPosition = 'top';
+              } else if (dragOverIndex === idx) {
+                highlightPosition = 'top';
+              } else if (dragOverIndex === category.stats.length && idx === category.stats.length - 1) {
+                highlightPosition = 'bottom';
+              }
+            }
+
             return (
               <React.Fragment key={stat.id}>
                 <StatItem
@@ -233,15 +361,24 @@ const CategoryItem: React.FC<CategoryItemProps> = ({
                   stat={stat}
                   onDelete={onStatDelete}
                   onEdit={onStatEdit}
+                  highlightPosition={highlightPosition}
                 />
-                {dragOverIndex === idx + 1 && (
-                  <div className="h-1 bg-blue-500 rounded-full opacity-80" />
+                {isExpanded && dragOverIndex === null && hoverInsertIndex === idx + 1 && (
+                  <div className="flex justify-center">
+                    <button
+                      onClick={() => onAddStat(category.id, idx + 1)}
+                      className="px-2 py-1 text-xs bg-blue-700 text-white rounded hover:bg-blue-800 transition-colors duration-200 cursor-pointer"
+                      title="Add Stat"
+                    >
+                      + Add Stat Here
+                    </button>
+                  </div>
                 )}
               </React.Fragment>
             );
           })}
         </div>
-      )}
+      </div>
     </div>
   );
 };
@@ -254,6 +391,7 @@ const StatsManager: React.FC<StatsManagerProps> = ({ config, onConfigChange, onC
   const [statSearchQuery, setStatSearchQuery] = useState('');
   const modalRef = useRef<HTMLDivElement>(null);
   const statSelectorRef = useRef<HTMLDivElement>(null);
+  const [selectedInsertIndex, setSelectedInsertIndex] = useState<number | null>(null);
 
   const generateId = () => Math.random().toString(36).substr(2, 9);
 
@@ -366,8 +504,9 @@ const StatsManager: React.FC<StatsManagerProps> = ({ config, onConfigChange, onC
     }
   };
 
-  const handleAddStat = (categoryId: string) => {
+  const handleAddStat = (categoryId: string, insertIndex: number) => {
     setSelectedCategoryId(categoryId);
+    setSelectedInsertIndex(insertIndex);
     setStatSearchQuery('');
     setShowStatSelector(true);
   };
@@ -385,16 +524,19 @@ const StatsManager: React.FC<StatsManagerProps> = ({ config, onConfigChange, onC
 
     const updatedConfig = {
       ...config,
-      categories: config.categories.map(cat =>
-        cat.id === selectedCategoryId
-          ? { ...cat, stats: [...cat.stats, newStatRef] }
-          : cat
-      ),
+      categories: config.categories.map(cat => {
+        if (cat.id !== selectedCategoryId) return cat;
+        const insertAt = Math.max(0, Math.min(cat.stats.length, selectedInsertIndex ?? cat.stats.length));
+        const newStats = [...cat.stats];
+        newStats.splice(insertAt, 0, newStatRef);
+        return { ...cat, stats: newStats };
+      }),
       version: config.version + 1,
     };
     onConfigChange(updatedConfig);
     setShowStatSelector(false);
     setSelectedCategoryId(null);
+    setSelectedInsertIndex(null);
     setStatSearchQuery('');
   };
 
@@ -417,7 +559,7 @@ const StatsManager: React.FC<StatsManagerProps> = ({ config, onConfigChange, onC
       ...config,
       categories: config.categories.map(cat => ({
         ...cat,
-        stats: cat.stats.map(stat => 
+        stats: cat.stats.map(stat =>
           stat.id === statId ? updatedStatRef : stat
         )
       })),
@@ -450,7 +592,7 @@ const StatsManager: React.FC<StatsManagerProps> = ({ config, onConfigChange, onC
   };
 
   const handleResetToDefault = () => {
-    if (window.confirm('Are you sure you want to reset to default configuration? This will lose all your customizations.')) {
+    if (window.confirm('Are you sure you want to reset to default configuration?')) {
       onConfigChange(DEFAULT_STATS_CONFIG);
     }
   };
@@ -472,13 +614,13 @@ const StatsManager: React.FC<StatsManagerProps> = ({ config, onConfigChange, onC
             <div className="flex space-x-2">
               <button
                 onClick={handleResetToDefault}
-                className="px-3 py-1 bg-gray-600 text-white text-sm rounded hover:bg-gray-700 transition-colors duration-200"
+                className="px-3 py-1 bg-gray-600 text-white text-sm rounded hover:bg-gray-700 transition-colors duration-200 cursor-pointer"
               >
                 Reset to Default
               </button>
               <button
                 onClick={() => setIsAddingCategory(true)}
-                className="px-3 py-1 bg-green-700 text-white text-sm rounded hover:bg-green-800 transition-colors duration-200"
+                className="px-3 py-1 bg-blue-700 text-white text-sm rounded hover:bg-blue-800 transition-colors duration-200 cursor-pointer"
               >
                 + Category
               </button>
@@ -498,7 +640,7 @@ const StatsManager: React.FC<StatsManagerProps> = ({ config, onConfigChange, onC
                 <div className="flex space-x-2">
                   <button
                     onClick={handleAddCategory}
-                    className="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700 transition-colors duration-200"
+                    className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors duration-200"
                   >
                     Add
                   </button>
@@ -542,6 +684,7 @@ const StatsManager: React.FC<StatsManagerProps> = ({ config, onConfigChange, onC
                 onClick={() => {
                   setShowStatSelector(false);
                   setSelectedCategoryId(null);
+                  setSelectedInsertIndex(null);
                   setStatSearchQuery('');
                 }}
                 className="text-gray-400 hover:text-white text-xl transition-colors duration-200"
