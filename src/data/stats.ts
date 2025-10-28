@@ -52,7 +52,7 @@ export const itemStats = [
     stats: [
       { name: "Crit Hit Rating", type: "flat" },
       { name: "Crit DMG Rating", type: "flat" },
-      { name: "+Crit DMG%", type: "percent" },
+      { name: "Crit DMG% (+)", type: "percent" },
       { name: "Physical Crit Hit Rating", type: "flat" },
       { name: "Energy Crit Hit Rating", type: "flat" },
       { name: "Mental Crit Hit Rating", type: "flat" },
@@ -79,7 +79,7 @@ export const itemStats = [
       { name: "Deflect Multi.", type: "percent" },
       { name: "Dodge Rating", type: "flat" },
       { name: "Dodge Multi.", type: "percent" },
-      { name: "+DMG Reduction%", type: "percent" },
+      { name: "DMG Reduction% (+)", type: "percent" },
       { name: "Tenacity", type: "flat" },
       { name: "Reduced DMG from Deflected", type: "percent" },
       { name: "Reduced DMG from Melee", type: "percent" },

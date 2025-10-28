@@ -21,18 +21,16 @@ function customRound(value: number, decimals: number = 0): number {
   }
 }
 
-
 export function formatStatValue(value: number, statConfig: StatConfig): string {
   // Use format string if specified
   if (statConfig.format) {
     // Replace placeholders in format string
     let formatted = statConfig.format
       .replace(/\{value\}/g, value.toString())
-      .replace(/\{value\.2f\}/g, customRound(value, 2).toString())
-      .replace(/\{value\.1f\}/g, customRound(value, 1).toString())
-      .replace(/\{value\.0f\}/g, customRound(value, 0).toString())
-      .replace(/\{value\.0\}/g, Math.round(value).toString());
-    
+      .replace(/\{value\.0d\}/g, Math.round(value).toString())
+      .replace(/\{value\.1d\}/g, (Math.round(value * 10) / 10).toString())
+      .replace(/\{value\.2d\}/g, (Math.round(value * 100) / 100).toString());
+
     return formatted;
   }
 
@@ -76,9 +74,9 @@ export function getStatTooltip(statConfig: StatConfig, hero?: any): string {
 }
 
 export function getRawValue(value: number, statConfig: StatConfig): string {
-  // Truncate to 3 decimals without rounding
-  const truncated = Math.trunc(value * 1000) / 1000;
-  
+  // Truncate to 2 decimals without rounding
+  const truncated = Math.trunc(value * 100) / 100;
+
   // Check if the stat should have a minus sign
   const minusStats = [
     "medkit-cooldown",
@@ -88,12 +86,12 @@ export function getRawValue(value: number, statConfig: StatConfig): string {
     "reduced-dmg-from-melee",
     "reduced-dmg-from-ranged",
   ];
-  
+
   const shouldShowMinus = minusStats.includes(statConfig.id);
   const prefix = shouldShowMinus ? "-" : "";
-  
-  const hasPercent = statConfig.format && statConfig.format.includes('%');
+
+  const hasPercent = statConfig.format && statConfig.format.includes("%");
   const suffix = hasPercent ? "%" : "";
-  
-  return `${prefix}${truncated.toFixed(3)}${suffix}`;
+
+  return `${prefix}${truncated.toFixed(2)}${suffix}`;
 }

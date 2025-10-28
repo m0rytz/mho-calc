@@ -143,10 +143,11 @@ export function calculateFinalStats(
     infinityAttackSpeed +
     synergyAttackSpeed;
   finalStats["Raw Attack Speed"] = rawAttackSpeed;
-  finalStats["Attack Speed"] =
+  const effectiveAttackSpeed =
     rawAttackSpeed < 12.5
       ? rawAttackSpeed
       : 0.4 * (1 - Math.exp((-3 * rawAttackSpeed) / 100)) * 100;
+  finalStats["Attack Speed"] = effectiveAttackSpeed;
 
   // Move Speed
   const infinityMoveSpeed = infinity["Attack & Move Speed"] ?? 0;
@@ -157,7 +158,7 @@ export function calculateFinalStats(
     (1 +
       (infinityMoveSpeed + synergyMoveSpeed + (itemTotals["Move Speed"] ?? 0)) /
         100);
-  finalStats["Move Speed"] = Math.round(totalMoveSpeed);
+  finalStats["Move Speed"] = totalMoveSpeed;
 
   // Medkit Cooldown
   const attributeMedkitCooldown = int * 25;
@@ -184,34 +185,55 @@ export function calculateFinalStats(
           4
         : 0;
   }
+
+  let startingBaseDmg = 0;
+  if (hero?.archetype1 === "Jack of All Trades") {
+    startingBaseDmg =
+      ((heroAttributes["Durability"] || 0) +
+        (heroAttributes["Strength"] || 0) +
+        (heroAttributes["Fighting"] || 0) +
+        (heroAttributes["Speed"] || 0) +
+        (heroAttributes["Energy"] || 0) +
+        (heroAttributes["Intelligence"] || 0)) *
+      1.5;
+  } else {
+    startingBaseDmg =
+      archetype1 && archetype1list[archetype1]
+        ? ((heroAttributes[archetype1list[archetype1][0]] ?? 0) +
+            (heroAttributes[archetype1list[archetype1][1]] ?? 0)) *
+          4
+        : 0;
+  }
+
   const trait1BaseDmgOfBnsHp =
     hero.trait1 === "Base DMG of Bonus Health"
       ? (maxHealth - baseHealth) * 0.005
       : 0;
+  finalStats["Starting Base DMG"] = startingBaseDmg + trait1BaseDmgOfBnsHp;
   finalStats["Base DMG"] = baseDmg + trait1BaseDmgOfBnsHp;
 
   const dmgRatingConverted = dmgRating / 40;
-  finalStats["DMG%"] = dmgRatingConverted ?? 0;
+  finalStats["Normal DMG%"] = dmgRatingConverted;
 
   // ===== X DMG% =====
-  const dmgTypes = ["Physical", "Energy", "Mental"];
+  const dmgTypes1 = ["Physical", "Energy", "Mental"];
 
-  for (const type of dmgTypes) {
-    const ratingKey = `${type} DMG Rating`;
-    const addKey = `${type} Base DMG%`;
-    const totalKey = `Total ${type} DMG%`;
+  for (const type1 of dmgTypes1) {
+    const ratingKey = `${type1} DMG Rating`;
+    const addKey = `${type1} Base DMG%`;
+    const totalKey = `Total ${type1} DMG%`;
 
     const dmgRatingVal = (itemTotals[ratingKey] ?? 0) + dmgRating;
     finalStats[ratingKey] = dmgRatingVal;
-    finalStats[addKey] = finalStats[ratingKey] / 40;
 
     const addVal = (itemTotals[addKey] ?? 0) + (synergy[addKey] ?? 0);
+    finalStats[addKey] = addVal;
 
-    const totalVal = dmgRatingVal;
-    finalStats[totalKey] = totalVal / 40 + addVal;
+    const finalVal = dmgRatingVal / 40 + addVal;
+    finalStats[totalKey] = finalVal;
   }
 
-  const keywordTypes = [
+  const dmgTypes2 = [
     "Melee",
     "Ranged",
     "Summon",
@@ -220,10 +242,10 @@ export function calculateFinalStats(
     "Signature",
   ];
 
-  for (const type of keywordTypes) {
-    const ratingKey = `${type} DMG Rating`;
-    const addKey = `${type} Base DMG%`;
-    const totalKey = `Total ${type} DMG%`;
+  for (const type2 of dmgTypes2) {
+    const ratingKey = `${type2} DMG Rating`;
+    const addKey = `${type2} Base DMG%`;
+    const totalKey = `Total ${type2} DMG%`;
 
     const dmgRatingVal = itemTotals[ratingKey] ?? 0;
     finalStats[ratingKey] = dmgRatingVal;
@@ -231,7 +253,8 @@ export function calculateFinalStats(
     const addVal = (itemTotals[addKey] ?? 0) + (synergy[addKey] ?? 0);
     finalStats[addKey] = addVal;
 
-    finalStats[totalKey] = dmgRatingVal / 40 + addVal;
+    const finalVal = dmgRatingVal / 40 + addVal;
+    finalStats[totalKey] = finalVal;
   }
 
   finalStats["Power Duration"] = itemTotals["Power Duration"] ?? 0;
@@ -265,16 +288,15 @@ export function calculateFinalStats(
     (itemTotals["Targeting You"] ?? 0) / 40;
   finalStats["DMG vs Not Targeting You"] =
     (hero.trait1 === "DMG vs Not Targeting You" ? 20 : 0) +
-    (synergy["DMG vs Enemies Not Targeting You"] ?? 0) + (itemTotals["Not Targeting You"] ?? 0 / 40);
+    (synergy["DMG vs Enemies Not Targeting You"] ?? 0) +
+    (itemTotals["Not Targeting You"] ?? 0 / 40);
   finalStats["DMG vs Unaware Targets"] =
     (itemTotals["Unaware Targets"] ?? 0) / 40;
   finalStats["DMG vs Weakened"] =
-    (infinity["DMG vs Weakened"] ?? 0) +
-    (itemTotals["Weakened"] ?? 0) / 40;
+    (infinity["DMG vs Weakened"] ?? 0) + (itemTotals["Weakened"] ?? 0) / 40;
   finalStats["DMG vs Stunned"] = (itemTotals["Stunned"] ?? 0) / 40;
   finalStats["DMG vs Slowed"] =
-    (synergy["DMG vs Slowed Targets"] ?? 0) +
-    (itemTotals["Slowed"] ?? 0) / 40;
+    (synergy["DMG vs Slowed Targets"] ?? 0) + (itemTotals["Slowed"] ?? 0) / 40;
   finalStats["DMG vs Knockdown"] = (itemTotals["Knockdown"] ?? 0) / 40;
   finalStats["DMG vs Chilled"] = (itemTotals["Chilled"] ?? 0) / 40;
   finalStats["DMG vs Frozen"] = (itemTotals["Frozen"] ?? 0) / 40;
@@ -283,12 +305,10 @@ export function calculateFinalStats(
   finalStats["DMG vs Petrified"] = (itemTotals["Petrified"] ?? 0) / 40;
   finalStats["DMG vs Constricted Webbing"] =
     (itemTotals["Constricted Webbing"] ?? 0) / 40;
-  finalStats["DMG vs DoT Affected"] =
-    (itemTotals["DoT Affected"] ?? 0) / 40;
+  finalStats["DMG vs DoT Affected"] = (itemTotals["DoT Affected"] ?? 0) / 40;
   finalStats["DMG vs Feared"] = (itemTotals["Feared"] ?? 0) / 40;
   finalStats["DMG vs Bleeding"] =
-    (synergy["DMG vs Bleeding"] ?? 0) +
-    (itemTotals["Bleeding"] ?? 0) / 40;
+    (synergy["DMG vs Bleeding"] ?? 0) + (itemTotals["Bleeding"] ?? 0) / 40;
   finalStats["DMG vs Burning"] = (itemTotals["Burning"] ?? 0) / 40;
   finalStats["DMG vs Hellfire"] = (itemTotals["Hellfire"] ?? 0) / 40;
   finalStats["DMG vs Machines"] = synergy["DMG vs Machines"] ?? 0;
@@ -308,7 +328,7 @@ export function calculateFinalStats(
   const trait1CritHit = trait1 === "Crit Hit%" ? 3 : 0;
   const infinityCritHit = infinity["Crit Hit%"] ?? 0;
   const plusCritHit = trait1CritHit + infinityCritHit;
-  finalStats["+Crit Hit%"] = plusCritHit;
+  finalStats["Crit Hit% (+)"] = plusCritHit;
   const totalCritHit =
     10 +
     (89 * critHitMultiplied) / (critHitMultiplied + 80 * heroLevel) +
@@ -316,7 +336,7 @@ export function calculateFinalStats(
   finalStats["Total Crit Hit%"] = totalCritHit;
 
   // X Crit Hit%
-  for (const type of dmgTypes) {
+  for (const type of dmgTypes1) {
     calculateTypeCritHit(
       type,
       itemTotals,
@@ -329,7 +349,7 @@ export function calculateFinalStats(
     );
   }
 
-  for (const type of keywordTypes) {
+  for (const type of dmgTypes2) {
     calculateTypeCritHit(
       type,
       itemTotals,
@@ -355,7 +375,7 @@ export function calculateFinalStats(
     trait1CritDmg +
     synergyCritDmg +
     infinityCritDmg;
-  finalStats["+Crit DMG%"] = plusCritDmg;
+  finalStats["Crit DMG% (+)"] = plusCritDmg;
   const totalCritDmg = 150 + (critDmgRating / heroLevel) * 0.75 + plusCritDmg;
   finalStats["Total Crit DMG%"] = totalCritDmg;
 
@@ -370,11 +390,13 @@ export function calculateFinalStats(
   const trait1BrutalStrike = trait1 === "Brutal Strike %" ? 5 : 0;
   const infinityBrutalStrike = infinity["Brutal Strike%"] ?? 0;
   const plusBrutalStrike = trait1BrutalStrike + infinityBrutalStrike;
-  finalStats["+Brutal Strike%"] = plusBrutalStrike;
+  finalStats["Brutal Strike% (+)"] = plusBrutalStrike;
   const brutalStrike =
-    plusBrutalStrike +
-    (0.89 * brutalStrikeMultiplied) / (brutalStrikeMultiplied + 80 * heroLevel);
-  finalStats["Total Brutal Strike%"] = brutalStrike * 100;
+    ((0.89 * brutalStrikeMultiplied) /
+      (brutalStrikeMultiplied + 80 * heroLevel) +
+      plusBrutalStrike) *
+    100;
+  finalStats["Total Brutal Strike%"] = brutalStrike;
 
   // Brutal DMG
   const brutalDmgRating = itemTotals["Brutal DMG Rating"] ?? 0;
@@ -383,7 +405,7 @@ export function calculateFinalStats(
   const synergyBrutalDmg = synergy["Brutal DMG%"] ?? 0;
   const infinityBrutalDmg = infinity["Brutal DMG%"] ?? 0;
   const plusBrutalDmg = synergyBrutalDmg + infinityBrutalDmg * 10;
-  finalStats["+Brutal DMG%"] = plusBrutalDmg;
+  finalStats["Brutal DMG% (+)"] = plusBrutalDmg;
   const totalBrutalDmg = totalCritDmg + brutalDmg + plusBrutalDmg;
   finalStats["Total Brutal DMG%"] = totalBrutalDmg;
 
@@ -473,14 +495,14 @@ export function calculateFinalStats(
   defenseRating += itemTotals["Defense Rating"] ?? 0;
   const synergyDefenseMulti = synergy["Defense Multi."] ?? 0;
   defenseMulti =
-    defenseMulti * 100 +
-    dur +
-    synergyDefenseMulti +
-    (infinity["Defense Multi."] ?? 0) +
-    (itemTotals["Defense Multi."] ?? 0);
-  finalStats["Defense Multi."] = defenseMulti;
-  const defenseMultiplied = (defenseRating ?? 0) * (1 + defenseMulti / 100);
-  finalStats["Defense Rating"] = parseInt(defenseMultiplied.toFixed(2));
+    defenseMulti +
+    dur * 0.01 +
+    synergyDefenseMulti / 10 +
+    (infinity["Defense Multi."] ?? 0) / 100 +
+    (itemTotals["Defense Multi."] ?? 0) / 100;
+  finalStats["Defense Multi."] = defenseMulti * 100;
+  const defenseMultiplied = defenseRating * (1 + defenseMulti);
+  finalStats["Defense Rating"] = defenseMultiplied;
   const totalDefense =
     ((0.4 * defenseMultiplied) / (defenseMultiplied + 200 * heroLevel)) * 100;
   finalStats["Total Defense%"] = totalDefense;
@@ -488,17 +510,17 @@ export function calculateFinalStats(
   deflectRating += itemTotals["Deflect Rating"] ?? 0;
   const synergyDeflectMulti = synergy["Deflect Multi."] ?? 0;
   deflectMulti =
-    deflectMulti * 100 +
-    str +
-    synergyDeflectMulti +
-    (itemTotals["Deflect Multi."] ?? 0);
-  finalStats["Deflect Multi."] = deflectMulti;
-  const deflectMultiplied = deflectRating * (1 + deflectMulti / 100);
+    deflectMulti +
+    str * 0.01 +
+    synergyDeflectMulti / 10 +
+    (itemTotals["Deflect Multi."] ?? 0) / 100;
+  finalStats["Deflect Multi."] = deflectMulti * 100;
+  const deflectMultiplied = deflectRating * (1 + deflectMulti);
   finalStats["Deflect Rating"] = deflectMultiplied;
   const trait3DeflectPct = trait3 === "Deflect%" ? 3 : 0;
   const infinityDeflectPct = infinity["Deflect% +"] ?? 0;
   const plusDeflectPct = trait3DeflectPct + infinityDeflectPct;
-  finalStats["+Deflect%"] = plusDeflectPct;
+  finalStats["Deflect% (+)"] = plusDeflectPct;
   const totalDeflect =
     ((0.9 * deflectMultiplied) / (deflectMultiplied + 250 * heroLevel)) * 100 +
     plusDeflectPct;
@@ -507,35 +529,48 @@ export function calculateFinalStats(
   dodgeRating += itemTotals["Dodge Rating"] ?? 0;
   const synergyDodgeMulti = synergy["Dodge Multi."] ?? 0;
   dodgeMulti =
-    dodgeMulti * 100 +
-    spd +
-    synergyDodgeMulti +
-    (itemTotals["Dodge Multi."] ?? 0);
-  finalStats["Dodge Multi."] = dodgeMulti;
-  const dodgeMultiplied = dodgeRating * (1 + dodgeMulti / 100);
+    dodgeMulti +
+    spd * 0.01 +
+    synergyDodgeMulti / 10 +
+    (itemTotals["Dodge Multi."] ?? 0) / 100;
+  finalStats["Dodge Multi."] = dodgeMulti * 100;
+  const dodgeMultiplied = dodgeRating * (1 + dodgeMulti);
   finalStats["Dodge Rating"] = dodgeMultiplied;
   const trait3DodgePct = trait3 === "Dodge%" ? 3 : 0;
   const infinityDodgePct = infinity["Dodge% +"] ?? 0;
   const plusDodgetPct = trait3DodgePct + infinityDodgePct;
-  finalStats["+Dodge%"] = plusDodgetPct;
+  finalStats["Dodge% (+)"] = plusDodgetPct;
   const totalDodge =
     ((0.45 * dodgeMultiplied) / (dodgeMultiplied + 250 * heroLevel)) * 100 +
     plusDodgetPct;
   finalStats["Total Dodge%"] = totalDodge;
 
-  const itemsDmgReduction = itemTotals["+DMG Reduction%"] ?? 0;
-  const infinityDmgReduction = infinity["+DMG Reduction%"] ?? 0;
+  const itemsDmgReduction = itemTotals["DMG Reduction% (+)"] ?? 0;
+  const infinityDmgReduction = infinity["DMG Reduction% (+)"] ?? 0;
   const combatTypeDmgReduction =
     combatType === "Melee Combatant" ? 8 : combatState === true ? 8 : 0;
   const plusDmgReduction =
     itemsDmgReduction + infinityDmgReduction + combatTypeDmgReduction;
-  finalStats["+DMG Reduction%"] = plusDmgReduction;
+  finalStats["DMG Reduction% (+)"] = plusDmgReduction;
+  const deflectToDmgReduction = Math.round(totalDeflect * 0.2 * 10) / 10;
+  const dodgeToDmgReduction = Math.round(totalDodge * 0.4 * 10) / 10;
   const totalDmgReduction =
-    totalDefense + totalDeflect * 0.2 + totalDodge * 0.4 + plusDmgReduction;
+    totalDefense +
+    deflectToDmgReduction +
+    dodgeToDmgReduction +
+    plusDmgReduction;
   finalStats["Total DMG Reduction %"] = totalDmgReduction;
 
   // Avg. Effective Health
-  finalStats["Avg. Effective Health"] = maxHealth / (1 - totalDmgReduction); // TODO
+  // finalStats["Avg. Effective Health"] = Math.round(maxHealth / (1 - totalDmgReduction)); // TODO
+  finalStats["Avg. Effective Health"] =
+    maxHealth /
+    (1 -
+      ((itemTotals["DMG Reduction% (+)"] ?? 0) +
+        (0.4 * defenseMultiplied) / (defenseMultiplied + 200 * heroLevel)) +
+      ((((0.2 * totalDeflect) / 100 / +0.4) * totalDodge) / 100) *
+        (1 - (0.5 * totalDeflect) / 100) *
+        (1 - totalDodge / 100));
 
   // ===== -DMG from =====
   // Deflected
