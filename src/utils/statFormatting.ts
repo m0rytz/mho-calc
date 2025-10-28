@@ -1,25 +1,25 @@
 import type { StatConfig } from "../types/statsConfig";
 
-function customRound(value: number, decimals: number = 0): number {
-  // ≥ 7 round up, ≤ 6 round down
-  const absValue = Math.abs(value);
-  const isNegative = value < 0;
-  const scaledValue = absValue * Math.pow(10, decimals);
+// function customRound(value: number, decimals: number = 0): number {
+//   // ≥ 7 round up, ≤ 6 round down
+//   const absValue = Math.abs(value);
+//   const isNegative = value < 0;
+//   const scaledValue = absValue * Math.pow(10, decimals);
 
-  // Check the furthest decimal place for rounding
-  const decimal = scaledValue - Math.floor(scaledValue);
-  if (decimal >= 0.7) {
-    const rounded = Math.ceil(scaledValue);
-    return isNegative
-      ? -(rounded / Math.pow(10, decimals))
-      : rounded / Math.pow(10, decimals);
-  } else {
-    const rounded = Math.floor(scaledValue);
-    return isNegative
-      ? -(rounded / Math.pow(10, decimals))
-      : rounded / Math.pow(10, decimals);
-  }
-}
+//   // Check the furthest decimal place for rounding
+//   const decimal = scaledValue - Math.floor(scaledValue);
+//   if (decimal >= 0.7) {
+//     const rounded = Math.ceil(scaledValue);
+//     return isNegative
+//       ? -(rounded / Math.pow(10, decimals))
+//       : rounded / Math.pow(10, decimals);
+//   } else {
+//     const rounded = Math.floor(scaledValue);
+//     return isNegative
+//       ? -(rounded / Math.pow(10, decimals))
+//       : rounded / Math.pow(10, decimals);
+//   }
+// }
 
 export function formatStatValue(value: number, statConfig: StatConfig): string {
   // Use format string if specified

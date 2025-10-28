@@ -553,7 +553,9 @@ export function calculateFinalStats(
     itemsDmgReduction + infinityDmgReduction + combatTypeDmgReduction;
   finalStats["DMG Reduction% (+)"] = plusDmgReduction;
   const deflectToDmgReduction = Math.round(totalDeflect * 0.2 * 10) / 10;
+  finalStats["Deflect% to DMG Reduction%"] = deflectToDmgReduction;
   const dodgeToDmgReduction = Math.round(totalDodge * 0.4 * 10) / 10;
+  finalStats["Dodge% to DMG Reduction%"] = dodgeToDmgReduction;
   const totalDmgReduction =
     totalDefense +
     deflectToDmgReduction +
