@@ -1,9 +1,19 @@
 # MHO Stat Calculator/Planner
 
-Stat calculator and planner for in Marvel Heroes Omega. Build with detailed stat calculations, damage analysis, and customizable displays.
+Stat calculator and planner for Marvel Heroes Omega.
 
 - Game Version: 1.52.0.1700 (2.16a)
 - MHServer Version: v0.8.0
+
+**Note:** The calculator’s results may have slight inaccuracies.
+
+## How to Use
+
+1. **Select Your Hero**
+2. **Add Items and Stats** Item stats displayed in-game are truncated to one decimal place, which cause discrepancies. For best accuracy, manually calculate the exact stat percentages using the detailed item view (hold Alt), then enter those values into the app.
+3. **Allocate Infinity**
+4. **Activate Synergies**
+5. **Calculate Damage** The Base Damage you enter in the damage calculator should be the damage value with traits activated and before any items, buff, infinity, and synergy.
 
 ## Features
 
@@ -21,18 +31,24 @@ Stat calculator and planner for in Marvel Heroes Omega. Build with detailed stat
 - **Normal, Crit, Brutal Damage**
 - **DMG vs (Condition)**
 - **Keyword System**
-- **DPS Analysis**
+- **Average Damage**
+
+### Other
+- Saves/Load builds in browser
+- Export/Import builds as .json file
 
 ### Supported Stats
 
 #### Core Stats
 - **Health** (Level Scaling)
-- **Spirit/Resource and Cost Reduction** (Level Scaling if applicable)
-- **Base Stats from Archetype and Traits** (Except hero-sepcific keyword Base DMG)
-- **Only Level 60 Attributes** (Can be adjusted in the Item Section)
+- **Spirit/Resource and Cost Reduction**
+- **Base Stats from Archetype and Traits**
+- **Attack Speed**
+- **Move Speed**
+- **Attributes** (ONLY LVL 60 Base Attributes)
 
 #### Damage Stats
-- **Base Damage** (Primary Attributes and Applicable Traits)
+- **Base Damage** (Primary Attributes and Traits if applicable)
 - **Damage Types**
 - **Critical Hit/Damage**
 - **Damage Type Critical Hit**
@@ -40,6 +56,7 @@ Stat calculator and planner for in Marvel Heroes Omega. Build with detailed stat
 - **Damage Type Brutal Strike** (WIP)
 
 #### Defense Stats
+- **Average Effective Health** (WIP)
 - **Damage Reduction**
 - **Defense**
 - **Deflect**
@@ -47,28 +64,12 @@ Stat calculator and planner for in Marvel Heroes Omega. Build with detailed stat
 - **Health Regeneration**
 - **Health On Hit**
 - **Health On Kill**
-- **Reduced DMG from (Type)**
-
-## How to Use
-
-1. **Select Your Hero**
-2. **Add Items and Stats**
-3. **Allocate Infinity**
-4. **Activate Synergies**
-5. **Calculate Damage**
-- Note: The "Base Damage" you enter in the damage calculator should be the damage value before any items, buff, infinity, and synergy.
-
-## Technical Features
-
-- **State Persistence**: Saves your builds locally
-- **Real-time Updates**: Instant calculations as you modify stats
+- **Reduced DMG from Melee, Ranged, Area**
 
 ## TODO
 
 - **[Damage Type] Brutal Strike**: Damage type-specific brutal strike
 - **Average Effective Health**
-- **DPS**: To include skill duration and cooldown
-- **Build Sharing**: Export/import build configurations
 
 ## Development
 
