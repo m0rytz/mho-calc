@@ -31,7 +31,7 @@ export default function HeroSection({ selectedHero, setSelectedHero, heroLevel, 
     }, [selectedHero]);
 
     return (
-        <div className="xl:fixed xl:left-10 xl:top-12 xl:w-[290px]">
+        <div className="xl:sticky xl:top-12 xl:w-[290px] xl:self-start">
             {/* Hero and Attributes Container */}
             <div className="flex flex-row xl:flex-col gap-4">
                 {/* Hero */}
@@ -73,12 +73,8 @@ export default function HeroSection({ selectedHero, setSelectedHero, heroLevel, 
                                     </option>
                                 ))}
                             </select>
-                        </div>
-                    </div>
-                    {hero && (
-                        <div className="grid grid-cols-1 gap-4 mt-6">
-                            <div className="rounded-lg bg-gray-800 p-1 px-2 flex justify-between items-center">
-                                <h1 className="text-sm font-medium text-white flex items-center gap-1">
+                            <div className="rounded-lg bg-gray-800 p-1 px-2 flex items-center gap-1">
+                                <h1 className="text-sm font-bold text-white">
                                     Level
                                 </h1>
                                 <input
@@ -96,8 +92,11 @@ export default function HeroSection({ selectedHero, setSelectedHero, heroLevel, 
                                     onFocus={(e) => e.target.select()}
                                     className="text-md w-16 border border-white rounded-sm text-white text-center"
                                 />
-
                             </div>
+                        </div>
+                    </div>
+                    {hero && (
+                        <div className="grid grid-cols-1 gap-4 mt-6">
                             <div className="rounded-lg bg-gray-800 p-1 px-2 flex justify-between items-center">
                                 <Tooltip
                                     content={
@@ -108,8 +107,8 @@ export default function HeroSection({ selectedHero, setSelectedHero, heroLevel, 
                                             .join(", ") || "No attributes"
                                     }
                                 >
-                                    <h1 className="text-sm font-medium text-white flex items-center gap-1">
-                                        Archetype 1: {hero.archetype1}
+                                    <h1 className="text-sm font-bold text-white flex items-center gap-1">
+                                        Archetype 1: <span className="text-sm font-medium">{" " + hero.archetype1}</span>
                                     </h1>
                                 </Tooltip>
                             </div>
@@ -123,15 +122,15 @@ export default function HeroSection({ selectedHero, setSelectedHero, heroLevel, 
                                             .join(", ") || "No attributes"
                                     }
                                 >
-                                    <h1 className="text-sm font-medium text-white flex items-center gap-1">
-                                        Archetype 2: {hero.archetype2}
+                                    <h1 className="text-sm font-bold text-white flex items-center gap-1">
+                                        Archetype 2: <span className="text-sm font-medium">{" " + hero.archetype2}</span>
                                     </h1>
                                 </Tooltip>
                             </div>
                             <div className="rounded-lg bg-gray-800 p-1 px-2 flex justify-between items-center">
                                 <Tooltip content={combatType[hero.combatType || "None"]}>
-                                    <h1 className="text-sm font-medium text-white flex items-center gap-1">
-                                        Combat Type: {hero.combatType || "None"}
+                                    <h1 className="text-sm font-bold text-white flex items-center gap-1">
+                                        Archetype 1: <span className="text-sm font-medium">{" " + hero.combatType || "None"}</span>
                                     </h1>
                                 </Tooltip>
                                 <Tooltip content="Proc?">
@@ -148,76 +147,76 @@ export default function HeroSection({ selectedHero, setSelectedHero, heroLevel, 
 
                 {/* Attributes */}
                 <Card className="flex-1 xl:mt-4">
-                <div className="space-y-2">
-                    {/* Durability */}
-                    <div className="flex items-center rounded-lg border border-red-800 p-2 gap-4">
-                        <Tooltip content={`+${finalStats["Durability"]}% Defense Rating Multiplier (1% per rank)
+                    <div className="space-y-1">
+                        {/* Durability */}
+                        <div className="flex items-center rounded-lg border border-red-800 p-2 gap-4">
+                            <Tooltip content={`+${finalStats["Durability"]}% Defense Rating Multiplier (1% per rank)
                         +${(finalStats["Durability"]) * heroLevel} Health (Level x 1 per rank)`}>
-                            <h1 className="play-bold text-md font-medium text-white w-32">DURABILITY</h1>
-                        </Tooltip>
-                        <div className="play-bold text-xl w-10 text-white text-center">
-                            {finalStats["Durability"] ?? 0}
+                                <h1 className="text-md font-bold text-red-400 w-32 ">DURABILITY</h1>
+                            </Tooltip>
+                            <div className="text-xl w-10 font-bold text-red-400 text-left">
+                                {finalStats["Durability"] ?? 0}
+                            </div>
                         </div>
-                    </div>
 
-                    {/* Strength */}
-                    <div className="flex items-center rounded-lg border border-orange-800 p-2 gap-4">
-                        <Tooltip content={`+${finalStats["Strength"]}% Deflect Rating Multiplier (1% per rank)
+                        {/* Strength */}
+                        <div className="flex items-center rounded-lg border border-orange-800 p-2 gap-4">
+                            <Tooltip content={`+${finalStats["Strength"]}% Deflect Rating Multiplier (1% per rank)
                         -${(finalStats["Strength"]) * 0.1 > 10 ? 10 : (finalStats["Strength"]) * 0.01}% reduced damage from Deflected attacks (-0.1% per rank, -10% maximum)`}>
-                            <h1 className="play-bold text-md font-medium text-white w-32">STRENGTH</h1>
-                        </Tooltip>
-                        <div className="play-bold text-xl w-10 text-white text-center">
-                            {finalStats["Strength"] ?? 0}
+                                <h1 className="text-md font-bold text-orange-400 w-32">STRENGTH</h1>
+                            </Tooltip>
+                            <div className="text-xl w-10 font-bold text-orange-400 text-left">
+                                {finalStats["Strength"] ?? 0}
+                            </div>
                         </div>
-                    </div>
 
-                    {/* Fighting */}
-                    <div className="flex items-center rounded-lg border border-yellow-800 p-2 gap-4">
-                        <Tooltip content={`+${(finalStats["Fighting"]) * 0.5}% Critical Rating Multiplier (0.5% per rank)
+                        {/* Fighting */}
+                        <div className="flex items-center rounded-lg border border-yellow-800 p-2 gap-4">
+                            <Tooltip content={`+${(finalStats["Fighting"]) * 0.5}% Critical Rating Multiplier (0.5% per rank)
                         -${(finalStats["Fighting"]) * 0.25 > 25 ? 25 : (finalStats["Fighting"]) * 0.25}% damage taken from Melee attacks (-0.25% per rank, -25% maximum)`}>
-                            <h1 className="play-bold text-md font-medium text-white w-32">FIGHTING</h1>
-                        </Tooltip>
-                        <div className="play-bold text-xl w-10 text-white text-center">
-                            {finalStats["Fighting"] ?? 0}
+                                <h1 className="text-md font-bold text-yellow-500 w-32">FIGHTING</h1>
+                            </Tooltip>
+                            <div className="text-xl w-10 font-bold text-yellow-500 text-left">
+                                {finalStats["Fighting"] ?? 0}
+                            </div>
                         </div>
-                    </div>
 
-                    {/* Speed */}
-                    <div className="flex items-center rounded-lg border border-green-800 p-2 gap-4">
-                        <Tooltip content={`+${(finalStats["Speed"])}% Dodge Rating Multiplier (1% per rank)
+                        {/* Speed */}
+                        <div className="flex items-center rounded-lg border border-green-800 p-2 gap-4">
+                            <Tooltip content={`+${(finalStats["Speed"])}% Dodge Rating Multiplier (1% per rank)
                         -${(finalStats["Speed"]) * 0.25 > 25 ? 25 : (finalStats["Speed"]) * 0.25}% damage taken from Area attacks (-0.25% per rank, -25% maximum)`}>
-                            <h1 className="play-bold text-md font-medium text-white w-32">SPEED</h1>
-                        </Tooltip>
-                        <div className="play-bold text-xl w-10 text-white text-center">
-                            {finalStats["Speed"] ?? 0}
+                                <h1 className="text-md font-bold text-green-600 w-32">SPEED</h1>
+                            </Tooltip>
+                            <div className="text-xl w-10 font-bold text-green-600 text-left">
+                                {finalStats["Speed"] ?? 0}
+                            </div>
                         </div>
-                    </div>
 
-                    {/* Energy */}
-                    <div className="flex items-center rounded-lg border border-blue-800 p-2 gap-4">
-                        <Tooltip content={`-${(finalStats["Energy"]) * 0.25 > 25 ? 25 : (finalStats["Energy"]) * 0.25}% damage taken from Ranged attacks (-0.25% per rank)
+                        {/* Energy */}
+                        <div className="flex items-center rounded-lg border border-blue-800 p-2 gap-4">
+                            <Tooltip content={`-${(finalStats["Energy"]) * 0.25 > 25 ? 25 : (finalStats["Energy"]) * 0.25}% damage taken from Ranged attacks (-0.25% per rank)
                         -${(finalStats["Energy"]) * 0.25 > 25 ? 25 : (finalStats["Energy"]) * 0.25}% Spirit  Cost (-0.25% per rank, -25% maximum)`}>
-                            <h1 className="play-bold text-md font-medium text-white w-32">ENERGY</h1>
-                        </Tooltip>
-                        <div className="play-bold text-xl w-10 text-white text-center">
-                            {finalStats["Energy"] ?? 0}
+                                <h1 className="text-md font-bold text-blue-500 w-32">ENERGY</h1>
+                            </Tooltip>
+                            <div className="text-xl w-10 font-bold text-blue-500 text-left">
+                                {finalStats["Energy"] ?? 0}
+                            </div>
                         </div>
-                    </div>
 
-                    {/* Intelligence */}
-                    <div className="flex items-center rounded-lg border border-violet-800 p-2 gap-4">
-                        <Tooltip content={`+${(finalStats["Intelligence"]) * heroLevel} Critical Damage Rating (Level x 1 per rank)
+                        {/* Intelligence */}
+                        <div className="flex items-center rounded-lg border border-violet-800 p-2 gap-4">
+                            <Tooltip content={`+${(finalStats["Intelligence"]) * heroLevel} Critical Damage Rating (Level x 1 per rank)
                         -${(finalStats["Intelligence"]) * 0.25 > 25 ? 25 : (finalStats["Intelligence"]) * 0.25}% Med Kit Cooldown (-0.25% per rank, -25% maximum)`}>
-                            <h1 className="play-bold text-md font-medium text-white w-32">INTELLIGENCE</h1>
-                        </Tooltip>
-                        <div className="play-bold text-xl w-10 text-white text-center">
-                            {finalStats["Intelligence"] ?? 0}
+                                <h1 className="text-md font-bold text-purple-400 w-32">INTELLIGENCE</h1>
+                            </Tooltip>
+                            <div className="text-xl w-10 font-bold text-purple-400 text-left">
+                                {finalStats["Intelligence"] ?? 0}
+                            </div>
                         </div>
                     </div>
-                </div>
                 </Card>
             </div>
-            
+
             {/* Info Button */}
             <div className="w-full px-4 flex justify-start mb-4">
                 <button

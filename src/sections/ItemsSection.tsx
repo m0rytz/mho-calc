@@ -152,11 +152,12 @@ export default function ItemsSection({ items, setItems }: ItemsSectionProps) {
 
     return (
         <div className="p-2 sm:p-2">
-            <p className="text-gray-400 pb-2 text-xs">* Item stats shown in-game are rounded 
-                to one decimal place, so they might not be exact. For better accuracy,
-                calculate the exact stat percentages from the detailed item view (hold Alt), 
-                then enter those values.
+            <p className="text-gray-400 pb-2 text-xs">* For better accuracy,
+                calculate the exact stat percentages from the detailed item view (Alt view),
+                then enter those values here. Example: <span className="text-green-700">+6.5% Attack Speed </span> 
+                [<span className="text-yellow-300">62</span>% of 4% - 8%] = <span className="text-green-700">+6.48 Attack Speed</span>
             </p>
+
             <div
                 className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 px-2 sm:px-4"
                 onDragOver={handleDragOver}
@@ -346,7 +347,7 @@ export default function ItemsSection({ items, setItems }: ItemsSectionProps) {
                                                 </div>
                                             </div>
 
-                                            <span className="text-white text-xs sm:text-[0.75rem] truncate">{statObj.stat}</span>
+                                            <span className="text-white text-xs sm:text-xs truncate">{statObj.stat}</span>
 
                                             <button
                                                 className="text-red-400 hover:text-red-600 text-[0.75rem] sm:text-base flex-shrink-0 cursor-pointer"

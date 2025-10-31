@@ -6,7 +6,7 @@ import { type HeroSynergy } from "../data/synergies";
 
 function SynergyStatsPanel({ tempSynergy }: { tempSynergy: Record<string, number> }) {
     return (
-        <Card className="rounded-lg shadow border border-gray-700 p-4 h-fit">
+        <Card className="rounded-lg shadow border border-gray-700 p-2 h-fit">
             <h3 className="font-bold text-lg mb-2 text-white">Synergy Stats</h3>
             {Object.keys(tempSynergy).length === 0 ? (
                 <p className="text-gray-300 text-sm italic">No synergies active</p>

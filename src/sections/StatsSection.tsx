@@ -77,7 +77,7 @@ export default function StatsSection({ selectedHero, finalStats, onSave, onLoad,
 
     return (
         <>
-            <div className="xl:fixed xl:right-10 xl:w-[350px] xl:top-12 w-full">
+            <div className="xl:sticky xl:top-12 xl:w-[350px] xl:self-start w-full">
                 <div className="flex flex-col xl:place-self-end p-2 gap-2">
                     <div className="flex items-center gap-2 xl:ml-auto justify-center xl:justify-end">
                         <button

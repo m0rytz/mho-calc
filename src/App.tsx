@@ -275,7 +275,7 @@ export default function App() {
                 )}
 
                 {/* Desktop Layout */}
-                <div className="hidden xl:block">
+                <div className="hidden xl:grid grid-cols-[290px_minmax(500px,_1fr)_345px] gap-4 items-start">
                     {/* Hero */}
                     <HeroSection
                         selectedHero={selectedHero} setSelectedHero={setSelectedHero}
@@ -286,85 +286,83 @@ export default function App() {
                         setInfoModalOpen={setInfoModalOpen}
                     />
 
+                    {/* Main Content Tabs */}
+                    <section className="flex-1 font-semibold">
+                        {/* Tab/Header Modernized */}
+                        <div className="sticky top-0 z-30 bg-[#081f39] backdrop-blur rounded-xl flex items-center px-4 gap-6 shadow-lg mb-1 py-2 border-b-2 border-blue-700/40">
+                            {/* Tab Buttons Only */}
+                            <nav className="flex gap-2 ml-6">
+                                <button
+                                    onClick={() => setActiveTab("items")}
+                                    className={`px-4 py-2 transition-colors duration-200 rounded-lg font-semibold text-base cursor-pointer ${activeTab === "items" ? "bg-blue-700/90 text-white shadow-md" : "text-sky-200 hover:bg-blue-800/50 hover:text-white"}`}
+                                >
+                                    Items
+                                </button>
+                                <button
+                                    onClick={() => setActiveTab("infinity")}
+                                    className={`px-4 py-2 transition-colors duration-200 rounded-lg font-semibold text-base cursor-pointer ${activeTab === "infinity" ? "bg-blue-700/90 text-white shadow-md" : "text-sky-200 hover:bg-blue-800/50 hover:text-white"}`}
+                                >
+                                    Infinity
+                                </button>
+                                <button
+                                    onClick={() => setActiveTab("synergy")}
+                                    className={`px-4 py-2 transition-colors duration-200 rounded-lg font-semibold text-base cursor-pointer ${activeTab === "synergy" ? "bg-blue-700/90 text-white shadow-md" : "text-sky-200 hover:bg-blue-800/50 hover:text-white"}`}
+                                >
+                                    Synergy
+                                </button>
+                                <button
+                                    onClick={() => setActiveTab("damage")}
+                                    className={`px-4 py-2 transition-colors duration-200 rounded-lg font-semibold text-base cursor-pointer ${activeTab === "damage" ? "bg-blue-700/90 text-white shadow-md" : "text-sky-200 hover:bg-blue-800/50 hover:text-white"}`}
+                                >
+                                    Damage
+                                </button>
+                            </nav>
+                            <div className="ml-auto" />
+                        </div>
+
+                        {/* Tab Content */}
+                        <div>
+                            {activeTab === "items" && (
+                                <ItemsSection items={items} setItems={setItems} />
+                            )}
+                            {activeTab === "infinity" && (
+                                <InfinitySection
+                                    infinity={infinity}
+                                    setInfinity={setInfinity}
+                                    infinityAttributes={infinityAttributes}
+                                    setInfinityAttributes={setInfinityAttributes}
+                                    pointsRemaining={pointsRemaining}
+                                    setPointsRemaining={setPointsRemaining}
+                                    ranks={ranks}
+                                    setRanks={setRanks}
+                                    usedPerGem={usedPerGem}
+                                    setUsedPerGem={setUsedPerGem}
+                                />
+                            )}
+                            {activeTab === "synergy" && (
+                                <SynergySection
+                                    heroLevel={heroLevel}
+                                    synergy={synergy} setSynergy={setSynergy}
+                                    activatedHeroes={activatedHeroes} setActivatedHeroes={setActivatedHeroes} />
+                            )}
+                            {activeTab === "damage" && (
+                                <DamageSection
+                                    finalStats={finalStats}
+                                    heroLevel={heroLevel}
+                                    damageCalculators={damageCalculators}
+                                    setDamageCalculators={setDamageCalculators}
+                                    globalCheckedConditions={globalCheckedConditions}
+                                    setGlobalCheckedConditions={setGlobalCheckedConditions}
+                                    vuln={vuln}
+                                    setVuln={setVuln}
+                                />
+                            )}
+                        </div>
+                    </section>
+
                     {/* Stats */}
                     <StatsSection selectedHero={selectedHero}
                         finalStats={finalStats} onSave={saveState} onLoad={loadState} onExportFile={exportStateToFile} onImportFile={importStateFromFile} />
-
-                    {/* Tabs */}
-                    <div className="grid grid-cols-[290px_minmax(500px,_1fr)_345px] justify-center gap-4">
-                        <section className="flex-1 col-start-2 row-start-1 font-semibold">
-                            {/* Tab/Header Modernized */}
-                            <div className="sticky top-0 z-30 bg-[#081f39] backdrop-blur rounded-xl flex items-center px-4 gap-6 shadow-lg mb-1 py-2 border-b-2 border-blue-700/40">
-                                {/* Tab Buttons Only */}
-                                <nav className="flex gap-2 ml-6">
-                                    <button
-                                        onClick={() => setActiveTab("items")}
-                                        className={`px-4 py-2 transition-colors duration-200 rounded-lg font-semibold text-base cursor-pointer ${activeTab === "items" ? "bg-blue-700/90 text-white shadow-md" : "text-sky-200 hover:bg-blue-800/50 hover:text-white"}`}
-                                    >
-                                        Items
-                                    </button>
-                                    <button
-                                        onClick={() => setActiveTab("infinity")}
-                                        className={`px-4 py-2 transition-colors duration-200 rounded-lg font-semibold text-base cursor-pointer ${activeTab === "infinity" ? "bg-blue-700/90 text-white shadow-md" : "text-sky-200 hover:bg-blue-800/50 hover:text-white"}`}
-                                    >
-                                        Infinity
-                                    </button>
-                                    <button
-                                        onClick={() => setActiveTab("synergy")}
-                                        className={`px-4 py-2 transition-colors duration-200 rounded-lg font-semibold text-base cursor-pointer ${activeTab === "synergy" ? "bg-blue-700/90 text-white shadow-md" : "text-sky-200 hover:bg-blue-800/50 hover:text-white"}`}
-                                    >
-                                        Synergy
-                                    </button>
-                                    <button
-                                        onClick={() => setActiveTab("damage")}
-                                        className={`px-4 py-2 transition-colors duration-200 rounded-lg font-semibold text-base cursor-pointer ${activeTab === "damage" ? "bg-blue-700/90 text-white shadow-md" : "text-sky-200 hover:bg-blue-800/50 hover:text-white"}`}
-                                    >
-                                        Damage
-                                    </button>
-                                </nav>
-                                <div className="ml-auto" />
-                            </div>
-
-                            {/* Tab Content */}
-                            <div>
-                                {activeTab === "items" && (
-                                    <ItemsSection items={items} setItems={setItems} />
-                                )}
-                                {activeTab === "infinity" && (
-                                    <InfinitySection
-                                        infinity={infinity}
-                                        setInfinity={setInfinity}
-                                        infinityAttributes={infinityAttributes}
-                                        setInfinityAttributes={setInfinityAttributes}
-                                        pointsRemaining={pointsRemaining}
-                                        setPointsRemaining={setPointsRemaining}
-                                        ranks={ranks}
-                                        setRanks={setRanks}
-                                        usedPerGem={usedPerGem}
-                                        setUsedPerGem={setUsedPerGem}
-                                    />
-                                )}
-                                {activeTab === "synergy" && (
-                                    <SynergySection
-                                        heroLevel={heroLevel}
-                                        synergy={synergy} setSynergy={setSynergy}
-                                        activatedHeroes={activatedHeroes} setActivatedHeroes={setActivatedHeroes} />
-                                )}
-                                {activeTab === "damage" && (
-                                    <DamageSection
-                                        finalStats={finalStats}
-                                        heroLevel={heroLevel}
-                                        damageCalculators={damageCalculators}
-                                        setDamageCalculators={setDamageCalculators}
-                                        globalCheckedConditions={globalCheckedConditions}
-                                        setGlobalCheckedConditions={setGlobalCheckedConditions}
-                                        vuln={vuln}
-                                        setVuln={setVuln}
-                                    />
-                                )}
-                            </div>
-                        </section>
-                    </div>
                 </div>
 
                 {/* Mobile/Tablet Layout */}

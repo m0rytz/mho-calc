@@ -182,14 +182,12 @@ function DamageCalculator({
 
             {/* Final */}
             <div className="grid grid-cols-3 gap-2 mb-2">
-                {/* Input Card */}
-                <div className="col-span-1 flex flex-col gap-2 bg-gray-700 rounded p-2 border border-blue-600">
+                {/* Normal Damage Card */}
+                <div className="col-span-1 flex flex-col bg-gray-700 rounded p-2 border border-blue-600">
                     <span className="text-xs text-blue-200 font-semibold mb-1">Normal</span>
-                    <div className="text-xs text-gray-400 mt-1">
-                        <div className="text-xs font-semibold text-blue-200">Final Min DMG <span className="font-bold text-white ml-2">{formatNumberSmallDecimal(finalMin)}</span></div>
-                    </div>
-                    <div className="text-xs text-gray-400 mt-1">
-                        <div className="text-xs font-semibold text-blue-200">Final Max DMG <span className="font-bold text-white ml-2">{formatNumberSmallDecimal(finalMax)}</span></div>
+                    <div className="text-xs text-gray-400 flex flex-col gap-2">
+                        <div>Min: <span className="font-bold text-blue-200">{formatNumberSmallDecimal(finalMin)}</span></div>
+                        <div>Max: <span className="font-bold text-blue-200">{formatNumberSmallDecimal(finalMax)}</span></div>
                     </div>
                 </div>
 
@@ -291,10 +289,10 @@ export default function DamageSection({
     }, 0);
 
     return (
-        <div className="p-2">
+        <div className="p-2 sm:p-2">
             <p className="text-gray-400 pb-2 text-xs">
-                * The Base Damages should be the damage value with talents and without any 
-                items, buff, infinity, and synergy.
+                * The Base Damages are damage values with talents and without any 
+                items, buff, infinity, and synergy equipped/activated.
             </p>
             <div className="flex justify-center text-sm mb-4 px-4 py-2 bg-gray-700 rounded border border-amber-500">
                 <span className="text-amber-500 mr-8">

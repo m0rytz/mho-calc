@@ -311,7 +311,7 @@ export default function InfinitySection({
                                                         onFocus={(e) => e.target.select()}
                                                         className="w-15 text-center border border-gray-600 bg-[#081a36] text-white rounded px-2 py-1"
                                                     />
-                                                    <span className="text-gray-400 text-sm tabular-nums inline-block w-8 text-right">/ {stat.max}</span>
+                                                    <span className="text-gray-400 text-sm tabular-nums inline-block w-10 text-right">/ {stat.max}</span>
                                                     <span className="text-blue-400 font-semibold text-sm tabular-nums w-15 text-left inline-block">
                                                         +{currentValue}
                                                         {stat.format === "percent"

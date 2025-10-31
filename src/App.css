@@ -1,16 +1,26 @@
+@import url("https://fonts.googleapis.com/css2?family=Play:wght@400;700&display=swap");
+
 html {
   background: radial-gradient(black, #011224);
+}
+
+body {
+  font-family: "Play", sans-serif;
+  transform: scaleY(1.005);
+  transform-origin: bottom;
 }
 
 /* ===== hide number input arrows completely ===== */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
+  appearance: none;
   -webkit-appearance: none;
   margin: 0;
 }
 
 /* Firefox */
 input[type="number"] {
+  appearance: textfield;
   -moz-appearance: textfield;
 }
 
@@ -31,40 +41,41 @@ input[type="number"] {
   background: #7a7a7a;
 }
 
-.play-bold {
-  font-family: "Play", sans-serif;
-  font-weight: 700;
-  font-style: normal;
-  letter-spacing: 0.1em;
-}
-
 /* Header Bar and Logo backgrounds - solid color instead of gradient */
-.header-bar, .mobile-header-bar {
-  box-shadow: 0 6px 24px 0 rgba(24, 38, 85, 0.23), 0 1.5px 2.5px 0 rgba(0,0,0,.16);
+.header-bar,
+.mobile-header-bar {
+  box-shadow: 0 6px 24px 0 rgba(24, 38, 85, 0.23), 0 1.5px 2.5px 0 rgba(0, 0, 0, .16);
   background: #081f39;
   border-radius: 1.25rem;
   padding: 0.5rem 2rem 0.5rem 1.15rem;
   margin-bottom: 1rem;
 }
-.header-bar img, .mobile-header-bar img {
+
+.header-bar img,
+.mobile-header-bar img {
   box-shadow: 0 0 0 3px #1976d2, 0 2px 8px 3px #18235744;
   background: #151c2e;
   padding: 0.09rem;
 }
 
 /* Nav/tab button styles in header */
-.header-bar nav button, .mobile-header-bar button {
+.header-bar nav button,
+.mobile-header-bar button {
   text-shadow: 0 1px 2px #0009, 0px 0px 3px #1a237eaa;
   transition: background 0.15s, color 0.1s, box-shadow 0.2s;
   border: none;
 }
-.header-bar nav button.active, .mobile-header-bar button.active {
+
+.header-bar nav button.active,
+.mobile-header-bar button.active {
   background: linear-gradient(90deg, #2563eb, #1e40af 90%);
   color: #fff;
   box-shadow: 0 2px 16px 2px #1e40af55;
   transform: scale(1.06);
 }
-.header-bar nav button:hover:not(.active), .mobile-header-bar button:hover:not(.active) {
+
+.header-bar nav button:hover:not(.active),
+.mobile-header-bar button:hover:not(.active) {
   background: #223b62cc;
   color: #fff;
 }
@@ -85,10 +96,13 @@ input[type="number"] {
 
 /* Touch-friendly improvements */
 @media (hover: none) and (pointer: coarse) {
-  button, input, select {
+
+  button,
+  input,
+  select {
     min-height: 44px;
   }
-  
+
   .cursor-pointer {
     cursor: default;
   }
@@ -101,6 +115,7 @@ input[type="number"] {
     font-size: 14px;
     margin-bottom: 0.7rem;
   }
+
   .header-bar img {
     width: 1.9rem;
     height: 1.9rem;
