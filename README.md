@@ -10,10 +10,10 @@ Stat calculator and planner for Marvel Heroes Omega.
 ## How to Use
 
 1. **Select Your Hero**
-2. **Add Items and Stats** Item stats shown in-game are rounded to one decimal place, so they might not be exact. For better accuracy, calculate the exact stat percentages from the detailed item view (hold Alt), then enter those values into the app.
+2. **Add Items and Stats** Item stats in-game are rounded to one decimal place, so they might not be exact. For better accuracy, calculate the exact stat percentages from the detailed item view (Alt view), then enter those values into the app.
 3. **Allocate Infinity**
 4. **Activate Synergies**
-5. **Calculate Damage** The Base Damage entered in the damage calculator should be the damage value with talents and without any items, buff, infinity, and synergy.
+5. **Calculate Damage** The Base Damage should be with talents and without any items, buff, infinity, and synergy equipped/activated.
 
 ## Features
 
