@@ -29,7 +29,7 @@ function formatNumberSmallDecimal(n: number) {
         return (
             <>
                 {intWithCommas}
-                <span className="ml-0.5 text-xs align-end" style={{ fontSize: '0.70em' }}>{decStr}</span>
+                <span className="text-[.85em] align-end">{decStr}</span>
             </>
         );
     }
@@ -184,6 +184,7 @@ function DamageCalculator({
             <div className="grid grid-cols-3 gap-2 mb-2">
                 {/* Input Card */}
                 <div className="col-span-1 flex flex-col gap-2 bg-gray-700 rounded p-2 border border-blue-600">
+                    <span className="text-xs text-blue-200 font-semibold mb-1">Normal</span>
                     <div className="text-xs text-gray-400 mt-1">
                         <div className="text-xs font-semibold text-blue-200">Final Min DMG <span className="font-bold text-white ml-2">{formatNumberSmallDecimal(finalMin)}</span></div>
                     </div>
@@ -194,7 +195,7 @@ function DamageCalculator({
 
                 {/* Critical Damage Card */}
                 <div className="col-span-1 flex flex-col bg-gray-700 rounded p-2 border border-yellow-600">
-                    <span className="text-xs text-yellow-300 font-semibold mb-1">Final Critical</span>
+                    <span className="text-xs text-yellow-300 font-semibold mb-1">Critical</span>
                     <div className="text-xs text-gray-400 flex flex-col gap-2">
                         <div>Min: <span className="font-bold text-yellow-200">{formatNumberSmallDecimal(finalCritMin)}</span></div>
                         <div>Max: <span className="font-bold text-yellow-200">{formatNumberSmallDecimal(finalCritMax)}</span></div>
@@ -203,7 +204,7 @@ function DamageCalculator({
 
                 {/* Brutal Damage Card */}
                 <div className="col-span-1 flex flex-col bg-gray-700 rounded p-2 border border-red-600">
-                    <span className="text-xs text-red-300 font-semibold mb-1">Final Brutal</span>
+                    <span className="text-xs text-red-300 font-semibold mb-1">Brutal</span>
                     <div className="text-xs text-gray-400 flex flex-col gap-2">
                         <div>Min: <span className="font-bold text-red-200">{formatNumberSmallDecimal(finalBrutalMin)}</span></div>
                         <div>Max: <span className="font-bold text-red-200">{formatNumberSmallDecimal(finalBrutalMax)}</span></div>
@@ -282,13 +283,19 @@ export default function DamageSection({
         const pC = applicableCritHitPct * (1 - applicableBrutalStrikePct);
         const pB = applicableCritHitPct * applicableBrutalStrikePct;
 
-        const avgDmg = finalAvg * (pN * 1 + pC * (finalStats["Total Crit DMG%"] / 100) + pB * (finalStats["Total Brutal DMG%"] / 100));
+        const avgDmg = finalAvg * (pN * 1 + pC 
+            * (finalStats["Total Crit DMG%"] / 100) 
+            + pB * (finalStats["Total Brutal DMG%"] / 100));
 
         return total + avgDmg;
     }, 0);
 
     return (
-        <div>
+        <div className="p-2">
+            <p className="text-gray-400 pb-2 text-xs">
+                * The Base Damages should be the damage value with talents and without any 
+                items, buff, infinity, and synergy.
+            </p>
             <div className="flex justify-center text-sm mb-4 px-4 py-2 bg-gray-700 rounded border border-amber-500">
                 <span className="text-amber-500 mr-8">
                     <span className="font-bold">Total Avg Dmg: {formatIntegerWithCommas(totalAvgDmg)}</span>

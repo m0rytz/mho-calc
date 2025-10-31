@@ -213,7 +213,7 @@ export function calculateFinalStats(
   finalStats["Base DMG"] = baseDmg + trait1BaseDmgOfBnsHp;
 
   const dmgRatingConverted = dmgRating / 40;
-  finalStats["Normal DMG%"] = dmgRatingConverted;
+  finalStats["DMG%"] = dmgRatingConverted;
 
   // ===== X DMG% =====
   const dmgTypes1 = ["Physical", "Energy", "Mental"];

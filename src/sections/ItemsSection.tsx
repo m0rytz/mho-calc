@@ -151,7 +151,12 @@ export default function ItemsSection({ items, setItems }: ItemsSectionProps) {
     }, [stopAutoScroll]);
 
     return (
-        <div className="p-2 sm:p-4">
+        <div className="p-2 sm:p-2">
+            <p className="text-gray-400 pb-2 text-xs">* Item stats shown in-game are rounded 
+                to one decimal place, so they might not be exact. For better accuracy,
+                calculate the exact stat percentages from the detailed item view (hold Alt), 
+                then enter those values.
+            </p>
             <div
                 className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 px-2 sm:px-4"
                 onDragOver={handleDragOver}

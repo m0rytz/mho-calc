@@ -71,7 +71,7 @@ export default function App() {
         loadState();
     }, []);
 
-    
+
 
     // Handle click outside to close info modal
     useEffect(() => {
@@ -237,7 +237,7 @@ export default function App() {
             const url = URL.createObjectURL(blob);
             const a = document.createElement("a");
             a.href = url;
-            a.download = `mho-calc-save-${new Date().toISOString().slice(0,10)}.json`;
+            a.download = `mho-calc-save-${new Date().toISOString().slice(0, 10)}.json`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -273,7 +273,7 @@ export default function App() {
                         {toast.message}
                     </div>
                 )}
-                
+
                 {/* Desktop Layout */}
                 <div className="hidden xl:block">
                     {/* Hero */}
@@ -287,42 +287,41 @@ export default function App() {
                     />
 
                     {/* Stats */}
-                    <StatsSection selectedHero={selectedHero} 
-                    finalStats={finalStats} onSave={saveState} onLoad={loadState} onExportFile={exportStateToFile} onImportFile={importStateFromFile} />
+                    <StatsSection selectedHero={selectedHero}
+                        finalStats={finalStats} onSave={saveState} onLoad={loadState} onExportFile={exportStateToFile} onImportFile={importStateFromFile} />
 
                     {/* Tabs */}
-                    <div className="grid grid-cols-[290px_minmax(500px,_1fr)_345px] justify-center gap-4 p-4">
-                        <section className="flex-1 col-start-2 row-start-1">
-                            {/* Tab Headers */}
-                            <div className="sticky top-0 z-20 bg-gray-900/80 backdrop-blur flex gap-4 border-b border-gray-700 mb-4 py-2">
-                                <button
-                                    onClick={() => setActiveTab("items")}
-                                    className={`pb-2 px-4 cursor-pointer ${activeTab === "items" ? "text-blue-500 border-b-2 border-blue-500 font-semibold" : "text-gray-400"
-                                        }`}
-                                >
-                                    Items
-                                </button>
-                                <button
-                                    onClick={() => setActiveTab("infinity")}
-                                    className={`pb-2 px-4 cursor-pointer ${activeTab === "infinity" ? "text-blue-500 border-b-2 border-blue-500 font-semibold" : "text-gray-400"
-                                        }`}
-                                >
-                                    Infinity
-                                </button>
-                                <button
-                                    onClick={() => setActiveTab("synergy")}
-                                    className={`pb-2 px-4 cursor-pointer ${activeTab === "synergy" ? "text-blue-500 border-b-2 border-blue-500 font-semibold" : "text-gray-400"
-                                        }`}
-                                >
-                                    Synergy
-                                </button>
-                                <button
-                                    onClick={() => setActiveTab("damage")}
-                                    className={`pb-2 px-4 cursor-pointer ${activeTab === "damage" ? "text-blue-500 border-b-2 border-blue-500 font-semibold" : "text-gray-400"
-                                        }`}
-                                >
-                                    Damage
-                                </button>
+                    <div className="grid grid-cols-[290px_minmax(500px,_1fr)_345px] justify-center gap-4">
+                        <section className="flex-1 col-start-2 row-start-1 font-semibold">
+                            {/* Tab/Header Modernized */}
+                            <div className="sticky top-0 z-30 bg-[#081f39] backdrop-blur rounded-xl flex items-center px-4 gap-6 shadow-lg mb-1 py-2 border-b-2 border-blue-700/40">
+                                {/* Tab Buttons Only */}
+                                <nav className="flex gap-2 ml-6">
+                                    <button
+                                        onClick={() => setActiveTab("items")}
+                                        className={`px-4 py-2 transition-colors duration-200 rounded-lg font-semibold text-base cursor-pointer ${activeTab === "items" ? "bg-blue-700/90 text-white shadow-md" : "text-sky-200 hover:bg-blue-800/50 hover:text-white"}`}
+                                    >
+                                        Items
+                                    </button>
+                                    <button
+                                        onClick={() => setActiveTab("infinity")}
+                                        className={`px-4 py-2 transition-colors duration-200 rounded-lg font-semibold text-base cursor-pointer ${activeTab === "infinity" ? "bg-blue-700/90 text-white shadow-md" : "text-sky-200 hover:bg-blue-800/50 hover:text-white"}`}
+                                    >
+                                        Infinity
+                                    </button>
+                                    <button
+                                        onClick={() => setActiveTab("synergy")}
+                                        className={`px-4 py-2 transition-colors duration-200 rounded-lg font-semibold text-base cursor-pointer ${activeTab === "synergy" ? "bg-blue-700/90 text-white shadow-md" : "text-sky-200 hover:bg-blue-800/50 hover:text-white"}`}
+                                    >
+                                        Synergy
+                                    </button>
+                                    <button
+                                        onClick={() => setActiveTab("damage")}
+                                        className={`px-4 py-2 transition-colors duration-200 rounded-lg font-semibold text-base cursor-pointer ${activeTab === "damage" ? "bg-blue-700/90 text-white shadow-md" : "text-sky-200 hover:bg-blue-800/50 hover:text-white"}`}
+                                    >
+                                        Damage
+                                    </button>
+                                </nav>
                                 <div className="ml-auto" />
                             </div>
 
@@ -383,32 +382,29 @@ export default function App() {
                     </div>
 
                     {/* Tab Headers - Mobile */}
-                    <div className="sticky top-0 z-20 bg-gray-900/80 backdrop-blur flex gap-2 border-b border-gray-700 mb-4 overflow-x-auto py-2">
+                    <div className="sticky top-0 z-30 bg-[#081f39] backdrop-blur flex items-center gap-2 px-3 border-b border-blue-800/40 mb-4 overflow-x-auto py-2">
+                        {/* Mobile: Tab Buttons Only */}
                         <button
                             onClick={() => setActiveTab("items")}
-                            className={`pb-2 px-3 cursor-pointer whitespace-nowrap text-sm ${activeTab === "items" ? "text-blue-500 border-b-2 border-blue-500 font-semibold" : "text-gray-400"
-                                }`}
+                            className={`px-3 py-2 transition-colors duration-200 rounded-lg text-xs font-semibold ${activeTab === "items" ? "bg-blue-700/90 text-white shadow" : "text-sky-200 hover:bg-blue-800/60 hover:text-white"}`}
                         >
                             Items
                         </button>
                         <button
                             onClick={() => setActiveTab("infinity")}
-                            className={`pb-2 px-3 cursor-pointer whitespace-nowrap text-sm ${activeTab === "infinity" ? "text-blue-500 border-b-2 border-blue-500 font-semibold" : "text-gray-400"
-                                }`}
+                            className={`px-3 py-2 transition-colors duration-200 rounded-lg text-xs font-semibold ${activeTab === "infinity" ? "bg-blue-700/90 text-white shadow" : "text-sky-200 hover:bg-blue-800/60 hover:text-white"}`}
                         >
                             Infinity
                         </button>
                         <button
                             onClick={() => setActiveTab("synergy")}
-                            className={`pb-2 px-3 cursor-pointer whitespace-nowrap text-sm ${activeTab === "synergy" ? "text-blue-500 border-b-2 border-blue-500 font-semibold" : "text-gray-400"
-                                }`}
+                            className={`px-3 py-2 transition-colors duration-200 rounded-lg text-xs font-semibold ${activeTab === "synergy" ? "bg-blue-700/90 text-white shadow" : "text-sky-200 hover:bg-blue-800/60 hover:text-white"}`}
                         >
                             Synergy
                         </button>
                         <button
                             onClick={() => setActiveTab("damage")}
-                            className={`pb-2 px-3 cursor-pointer whitespace-nowrap text-sm ${activeTab === "damage" ? "text-blue-500 border-b-2 border-blue-500 font-semibold" : "text-gray-400"
-                                }`}
+                            className={`px-3 py-2 transition-colors duration-200 rounded-lg text-xs font-semibold ${activeTab === "damage" ? "bg-blue-700/90 text-white shadow" : "text-sky-200 hover:bg-blue-800/60 hover:text-white"}`}
                         >
                             Damage
                         </button>
@@ -454,8 +450,8 @@ export default function App() {
                     </div>
 
                     {/* Stats Section - Mobile */}
-                    <StatsSection selectedHero={selectedHero} 
-                    finalStats={finalStats} onSave={saveState} onLoad={loadState} onExportFile={exportStateToFile} onImportFile={importStateFromFile} />
+                    <StatsSection selectedHero={selectedHero}
+                        finalStats={finalStats} onSave={saveState} onLoad={loadState} onExportFile={exportStateToFile} onImportFile={importStateFromFile} />
                 </div>
                 {/* Modal Overlay */}
                 {infoModalOpen && (
