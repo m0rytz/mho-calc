@@ -89,6 +89,22 @@ export default function App() {
         }
     }, [infoModalOpen]);
 
+    useEffect(() => {
+        if (!infoModalOpen) {
+            return;
+        }
+
+        const previousOverflow = document.body.style.overflow;
+        const previousTransform = document.body.style.transform;
+        document.body.style.overflow = "hidden";
+        document.body.style.transform = "none";
+
+        return () => {
+            document.body.style.overflow = previousOverflow;
+            document.body.style.transform = previousTransform;
+        };
+    }, [infoModalOpen]);
+
     const saveState = () => {
         const stateToSave = {
             selectedHero,
@@ -264,6 +280,62 @@ export default function App() {
 
 
     return (
+        <>
+            {/* Modal Overlay */}
+            {infoModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4 py-8">
+                    <div ref={infoModalRef} className="bg-gray-800 text-white rounded-lg shadow-2xl w-full max-w-2xl p-4 sm:p-6 relative max-h-[90vh] overflow-y-auto">
+                        <button
+                            className="absolute top-2 right-4 text-gray-400 hover:text-white text-lg font-bold"
+                            onClick={() => setInfoModalOpen(false)}
+                            aria-label="Close"
+                        >
+                            ×
+                        </button>
+                        {/* MHO Calc Info */}
+                        <div className="mb-4 text-xs text-center">
+                            <p className="font-bold">MHO Calculator</p>
+                            <p>by ken</p>
+                            <br />
+                            <p>MHServerEmu</p>
+                            <p>Game Version: 1.52.0.1700 (2.16a)</p>
+                        </div>
+                        {/* Sources/Tools */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs text-center">
+                            {/* Lace/Prinn */}
+                            <div className="flex flex-col items-center">
+                                <a className="underline" href="https://www.youtube.com/@WilfridWong" target="_blank" rel="noopener noreferrer">
+                                    Lace / Wilfrid Wong
+                                </a>
+                                <span>Prinn's Spreadsheet</span>
+                            </div>
+                            {/* Alex Bond */}
+                            <div className="flex flex-col items-center">
+                                <a className="underline" href="https://github.com/AlexBond2/MHServerEmu/tree/v1.0" target="_blank" rel="noopener noreferrer">
+                                    Database Browser - Alex Bond
+                                </a>
+                                <a className="underline" href="https://itembase.mhbugle.com/" target="_blank" rel="noopener noreferrer">
+                                    Item Base - Alex Bond
+                                </a>
+                            </div>
+                            {/* Crypto137 */}
+                            <div className="flex flex-col items-center">
+                                <a className="underline" href="https://github.com/Crypto137/MHDataParser" target="_blank" rel="noopener noreferrer">
+                                    Data Parser - Crypto137
+                                </a>
+                            </div>
+                        </div>
+                        {/* Disclaimer */}
+                        <div className="mt-4 text-xs text-center">
+                            <span>
+                                All Marvel-related visuals and characters shown here belong to Marvel Entertainment, LLC and Gazillion.
+                                <br />
+                                This website is fan-made, not an official Marvel or Gazillion project.
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            )}
         <div className="relative min-h-screen py-4 px-2 sm:py-8 sm:px-4 lg:py-12 lg:px-10">
             {/* Main Content */}
             <main>
@@ -451,62 +523,8 @@ export default function App() {
                     <StatsSection selectedHero={selectedHero}
                         finalStats={finalStats} onSave={saveState} onLoad={loadState} onExportFile={exportStateToFile} onImportFile={importStateFromFile} />
                 </div>
-                {/* Modal Overlay */}
-                {infoModalOpen && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-                        <div ref={infoModalRef} className="bg-gray-800 text-white rounded-lg shadow-2xl w-full max-w-2xl p-4 sm:p-6 relative max-h-[90vh] overflow-y-auto">
-                            <button
-                                className="absolute top-2 right-4 text-gray-400 hover:text-white text-lg font-bold"
-                                onClick={() => setInfoModalOpen(false)}
-                                aria-label="Close"
-                            >
-                                ×
-                            </button>
-                            {/* MHO Calc Info */}
-                            <div className="mb-4 text-xs text-center">
-                                <p className="font-bold">MHO Calculator</p>
-                                <p>by ken</p>
-                                <br />
-                                <p>MHServerEmu</p>
-                                <p>Game Version: 1.52.0.1700 (2.16a)</p>
-                            </div>
-                            {/* Sources/Tools */}
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs text-center">
-                                {/* Lace/Prinn */}
-                                <div className="flex flex-col items-center">
-                                    <a className="underline" href="https://www.youtube.com/@WilfridWong" target="_blank" rel="noopener noreferrer">
-                                        Lace / Wilfrid Wong
-                                    </a>
-                                    <span>Prinn's Spreadsheet</span>
-                                </div>
-                                {/* Alex Bond */}
-                                <div className="flex flex-col items-center">
-                                    <a className="underline" href="https://github.com/AlexBond2/MHServerEmu/tree/v1.0" target="_blank" rel="noopener noreferrer">
-                                        Database Browser - Alex Bond
-                                    </a>
-                                    <a className="underline" href="https://itembase.mhbugle.com/" target="_blank" rel="noopener noreferrer">
-                                        Item Base - Alex Bond
-                                    </a>
-                                </div>
-                                {/* Crypto137 */}
-                                <div className="flex flex-col items-center">
-                                    <a className="underline" href="https://github.com/Crypto137/MHDataParser" target="_blank" rel="noopener noreferrer">
-                                        Data Parser - Crypto137
-                                    </a>
-                                </div>
-                            </div>
-                            {/* Disclaimer */}
-                            <div className="mt-4 text-xs text-center">
-                                <span>
-                                    All Marvel-related visuals and characters shown here belong to Marvel Entertainment, LLC and Gazillion.
-                                    <br />
-                                    This website is fan-made, not an official Marvel or Gazillion project.
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                )}
             </main >
         </div >
+        </>
     );
 }
